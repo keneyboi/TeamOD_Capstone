@@ -17,12 +17,11 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class AttendanceChecker extends JFrame{
+public class Atendo extends JFrame{
     private JPanel mainFrame;
     private JTextField nameTF;
     private JButton generateStudentQRButton;
@@ -37,7 +36,7 @@ public class AttendanceChecker extends JFrame{
     private List<Student> list = new ArrayList<>();
 
 
-    public AttendanceChecker() throws IOException, WriterException {
+    public Atendo() throws IOException, WriterException {
         setSize(600, 700);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("Attendance Checker");
@@ -157,7 +156,7 @@ public class AttendanceChecker extends JFrame{
 
     public static void main(String[] args) {
         try{
-            new AttendanceChecker();
+            new Atendo();
         } catch (WriterException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
