@@ -49,6 +49,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
 
     private Account currentAccount;
 
+
     CardLayout innerCardLayout = (CardLayout)InnerCardPanel.getLayout();
     CardLayout cardLayout = (CardLayout)contentPanel.getLayout();
     JButton[] solveButtons = new JButton[]{createEventBT, createIDBT, scanIDBT, toAdd1, toAdd2};

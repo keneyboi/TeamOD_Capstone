@@ -306,7 +306,7 @@
                       <gridbag top="15" left="15" bottom="0" right="15" weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
-                      <text value="Student Name:"/>
+                      <text value="ID"/>
                     </properties>
                   </component>
                   <component id="96ed1" class="javax.swing.JTextField">
