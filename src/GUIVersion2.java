@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,19 +16,19 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     private JPanel InnerCardPanel;
     private JPanel DashBoard;
     private JButton DashboardButton;
-    private JButton hypergeometricButton;
-    private JButton binomialButton;
-    private JButton bernoulliButton;
-    private JButton permutationButton;
-    private JButton combinationButton;
-    private JButton solveBtn;
-    private JPanel combinationPane;
-    private JPanel permutationPane;
-    private JPanel bernoulliPane;
-    private JPanel binomialPane;
+    private JButton toAdd2;
+    private JButton toAdd1;
+    private JButton scanIDBT;
+    private JButton createIDBT;
+    private JButton createEventBT;
+    private JButton createBT;
+    private JPanel createEventPane;
+    private JPanel createIDPane;
+    private JPanel eventGroupPane;
+    private JPanel scanIDPane;
     private JPanel hypergeometricPane;
-    private JButton historyBtn;
-    private JButton accountBtn;
+    private JButton eventGroupBT;
+    private JButton accountBT;
     private JLabel logoLabel;
     private JPanel accountPane;
     private JPanel historyPane;
@@ -44,31 +43,34 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     private JTextField createEmailTF;
     private JPasswordField createPassConfirmPW;
     private JLabel emailLane;
+    private JTextField nameTF;
+    private JButton generateStudentQRButton;
     private List<Account> listOfAccounts = new ArrayList<>();
+
+    private Account currentAccount;
 
     CardLayout innerCardLayout = (CardLayout)InnerCardPanel.getLayout();
     CardLayout cardLayout = (CardLayout)contentPanel.getLayout();
-    JButton[] solveButtons = new JButton[]{combinationButton, permutationButton, bernoulliButton, binomialButton, hypergeometricButton};
-
+    JButton[] solveButtons = new JButton[]{createEventBT, createIDBT, scanIDBT, toAdd1, toAdd2};
+    Dimension small = new Dimension(280, 350);
+    Dimension medium = new Dimension(650, 380);
     public GUIVersion2(){
+
         getAccountList();
-
-
-
-
+        setSize(small);
         ImageIcon logo = new ImageIcon("assets/test.png");
         Image newLogo = logo.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
         logoLabel.setIcon(new ImageIcon(newLogo));
-        setTitle("Discrete Calculator");
-        setSize(650, 380);
+        setTitle("Attendo");
+        setLocationRelativeTo(null);
         setMinimumSize(new Dimension(250, 380));
         setResizable(true);
         add(contentPanel);
 
-        solveBtn.addActionListener(new ActionListener() {
+        createBT.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(getHeight() < 530 && !combinationButton.isVisible()) setSize(getWidth(), 530);
+                if(getHeight() < 530 && !createEventBT.isVisible()) setSize(getWidth(), 530);
                 for(JButton b : solveButtons){
                     if(!b.isVisible()) b.setVisible(true);
                     else b.setVisible(false);
@@ -77,8 +79,8 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             }
         });
 
-        accountBtn.addActionListener(this);
-        historyBtn.addActionListener(this);
+        accountBT.addActionListener(this);
+        eventGroupBT.addActionListener(this);
         for(JButton b : solveButtons){
             b.addActionListener(this);
         }
@@ -95,6 +97,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 cardLayout.show(contentPanel, "CreateAccount");
+                setSize(small);
             }
         });
         accountCreationBt.addActionListener(new ActionListener() {
@@ -106,6 +109,8 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                     if(Arrays.compare(createPassPF.getPassword(), createPassConfirmPW.getPassword()) != 0) throw new DefaultErrorException("Passwords don't match");
                     listOfAccounts.add(new Account(createAccTF.getText(), createEmailTF.getText(), createPassPF.getPassword()));
                     createAccountCSV();
+                    setSize(small);
+                    cardLayout.show(contentPanel, "Login");
                 } catch (DefaultErrorException ex) {
                     JOptionPane.showMessageDialog(null, ex.getMessage());
                 }catch (InvalidPasswordException ex) {
@@ -115,10 +120,28 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                 }
             }
         });
+
+        loginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                getAccountList();
+                for(Account a : listOfAccounts){
+                    if((a.getEmail().equals(usernameTF.getText()) || a.getName().equals(usernameTF.getText())) && Arrays.compare(a.getPassword(), passwordPF.getPassword()) == 0){
+                        currentAccount = a;
+                        JOptionPane.showMessageDialog(null, "Login Success");
+                        cardLayout.show(contentPanel, "MainMenu");
+                        setSize(medium);
+                        setLocationRelativeTo(null);
+                        return;
+                    }
+                }
+                JOptionPane.showMessageDialog(null, "Invalid username / password");
+            }
+        });
     }
 
     public void createAccountCSV(){
-        try(BufferedWriter bw = new BufferedWriter(new FileWriter("out/Account/accounts.csv"))){
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter("out/Account/AccountList.csv"))){
             for(Account a : listOfAccounts){
                 System.out.println("Adding: " + a);
                 bw.write(a.getName() + "," + a.getEmail() + "," + new String(a.getPassword()));
@@ -141,6 +164,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         } catch (FileNotFoundException e) {
             JOptionPane.showMessageDialog(null,"No Accounts Available");
             cardLayout.show(contentPanel, "CreateAccount");
+            setSize(small);
         } catch (IOException e) {
 
         }
@@ -153,8 +177,8 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                 innerCardLayout.show(InnerCardPanel, b.getActionCommand());
             }
         }
-        if(e.getSource() == accountBtn) innerCardLayout.show(InnerCardPanel, "Account");
-        if(e.getSource() == historyBtn) innerCardLayout.show(InnerCardPanel, "History");
+        if(e.getSource() == accountBT) innerCardLayout.show(InnerCardPanel, "Account");
+        if(e.getSource() == eventGroupBT) innerCardLayout.show(InnerCardPanel, "History");
     }
 
     public static void main(String[] args) {
