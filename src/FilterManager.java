@@ -27,6 +27,15 @@ public class FilterManager {
         csv.createCSVFile();
     }
 
+    public String[] getPrintableList(){
+
+        String[] result = new String[filteredList.size()];
+        for (int i = 0; i < filteredList.size(); i++) {
+            result[i] = filteredList.get(i).toString();
+        }
+        return result;
+    }
+
     private List<Person> singleFilter(List<Person> toFilter, String order) {
         switch(order.toLowerCase()){
             case "name":
