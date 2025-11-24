@@ -10,11 +10,13 @@ public class FilterManager {
     }
 
     public List<Person> filterList(String order){
-        return singleFilter(filteredList, order);
+        List<Person> copy = new ArrayList<>(filteredList);
+        return singleFilter(copy, order);
     }
 
     public List<Person> filterList(String[] order, String filter){
-        return multiFilter(filteredList, order, filter);
+        List<Person> copy = new ArrayList<>(filteredList);
+        return multiFilter(copy, order, filter);
     }
 
     public void filterCSV(CSVManager csv, String order){
@@ -75,7 +77,7 @@ public class FilterManager {
                 }
             }
         }
-        result.addAll(filteredList);
+        result.addAll(toFilter);
         return result;
     }
 
