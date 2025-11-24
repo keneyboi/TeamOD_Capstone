@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -129,6 +130,10 @@ public class AttendanceChecker extends JFrame{
                         frame.repaint();
                         BufferedImage image = webcam.getImage();
                         if(image == null) continue;
+                        if(!frame.isVisible()){
+                            webcam.close();
+                            return;
+                        }
                         LuminanceSource source = new BufferedImageLuminanceSource(image);
                         BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
 
