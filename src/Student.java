@@ -1,19 +1,24 @@
-public class Student {
-    private final String name;
-    private final String ID;
+import java.time.Instant;
+
+public class Student extends Person{
     private String section;
-    private String courseYear;
+    private String course;
+    private String year;
     public Student(String name, String ID, String section, String course, String year) {
-        this.name = name;
-        this.ID = ID;
+        super(name,ID);
         this.section = section;
-        courseYear = course + year;
+        this.course = course;
+        this.year = year;
+
     }
 
-    public String toString(){
-        return name + "," + ID + "," + section + "," + courseYear;
-    }
+    public String getID() { return getInfo(); }
+    public String getSection() { return section; }
+    public String getCourse() {return course;}
+    public String getYear() {return year;}
+
+    public String toString(){return getName() + "," + getInfo() + "," + section + "," + course + "," + year;}
     public String getPathName(){
-        return "out/Student ID Library/" + ID + " (" + name + ").png";
+        return "out/Student ID Library/" + getInfo() + " (" + getName() + ").png";
     }
 }
