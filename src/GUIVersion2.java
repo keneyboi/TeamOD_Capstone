@@ -43,6 +43,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     private JButton accountCreationBt;
     private JTextField createEmailTF;
     private JPasswordField createPassConfirmPW;
+    private JLabel emailLane;
     private List<Account> listOfAccounts = new ArrayList<>();
 
     CardLayout innerCardLayout = (CardLayout)InnerCardPanel.getLayout();
@@ -51,6 +52,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
 
     public GUIVersion2(){
         getAccountList();
+
 
 
 

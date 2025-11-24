@@ -7,7 +7,6 @@ public class Account {
     private char[] password;
     private List<EventGroup> listOfEventGroups;
 
-
     public Account(String name, String email, char[] password) throws InvalidPasswordException {
         setName(name);
         setEmail(email);
