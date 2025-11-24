@@ -1,11 +1,28 @@
+import com.github.eduramiba.webcamcapture.drivers.NativeDriver;
+import com.github.sarxos.webcam.Webcam;
+import com.github.sarxos.webcam.WebcamPanel;
+import com.github.sarxos.webcam.WebcamResolution;
+import com.google.zxing.*;
+import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.common.HybridBinarizer;
+
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class GUIVersion2 extends JFrame implements ActionListener {
     private JPanel contentPanel;
@@ -44,8 +61,19 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     private JPasswordField createPassConfirmPW;
     private JLabel emailLane;
     private JTextField nameTF;
-    private JButton generateStudentQRButton;
+    private JButton GENERATEIDButton;
+    private JLabel generateQRImageLabel;
+    private JPanel containerQRPanel;
+    private JTextField IDTF;
+    private JTextField courseTF;
+    private JTextField yearTF;
+    private JTextField sectionTF;
+    private JButton clearBT;
+    private JTable scanDisplayTable;
+    private JButton scanIDButton;
+    private JScrollPane scanScrollPane;
     private List<Account> listOfAccounts = new ArrayList<>();
+    private DefaultTableModel dm = new DefaultTableModel();
 
     private Account currentAccount;
 
@@ -54,10 +82,14 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     CardLayout cardLayout = (CardLayout)contentPanel.getLayout();
     JButton[] solveButtons = new JButton[]{createEventBT, createIDBT, scanIDBT, toAdd1, toAdd2};
     Dimension small = new Dimension(280, 350);
-    Dimension medium = new Dimension(650, 380);
+    Dimension medium = new Dimension(700, 550);
+
     public GUIVersion2(){
 
         getAccountList();
+        setTable();
+
+
         setSize(small);
         ImageIcon logo = new ImageIcon("assets/test.png");
         Image newLogo = logo.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
@@ -139,6 +171,141 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                 JOptionPane.showMessageDialog(null, "Invalid username / password");
             }
         });
+
+        GENERATEIDButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Student s = new Student(nameTF.getText(), IDTF.getText(), sectionTF.getText(), courseTF.getText(), yearTF.getText());
+
+                try {
+                    ImageIcon img = new ImageIcon(generateQRCode(s));
+                    generateQRImageLabel.setIcon(img);
+                } catch (WriterException ex) {
+                    throw new RuntimeException(ex);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+
+        clearBT.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                nameTF.setText("");
+                IDTF.setText("");
+                courseTF.setText("");
+                yearTF.setText("");
+                sectionTF.setText("");
+                generateQRImageLabel.setIcon(null);
+            }
+        });
+        scanIDButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("pressed");
+                clearTable();
+                openScanner(result->{
+                    setStudentFields(result);
+                });
+            }
+        });
+    }
+
+    public void clearTable(){
+        dm.setValueAt("", 0, 1);
+        dm.setValueAt("", 1, 1);
+        dm.setValueAt("", 2, 1);
+        dm.setValueAt("", 3, 1);
+        dm.setValueAt("", 4, 1);
+        scanScrollPane.repaint();
+        scanScrollPane.revalidate();
+    }
+
+    public void setStudentFields(String[] info){
+        dm.setValueAt(info[0], 0, 1);
+        dm.setValueAt(info[1], 1, 1);
+        dm.setValueAt(info[4], 2, 1);
+        dm.setValueAt(info[3], 3, 1);
+        dm.setValueAt(info[2], 4, 1);
+        scanScrollPane.repaint();
+        scanScrollPane.revalidate();
+    }
+
+    public void setTable(){
+        System.out.println("called set table");
+        scanDisplayTable.setModel(dm);
+        dm.addColumn("Label");
+        dm.addColumn("Value");
+
+        dm.addRow(new Object[]{"Name: ", ""});
+        dm.addRow(new Object[]{"ID: ", ""});
+        dm.addRow(new Object[]{"Course: ", ""});
+        dm.addRow(new Object[]{"Year: ", ""});
+        dm.addRow(new Object[]{"Section: ", ""});
+        scanScrollPane.repaint();
+        scanScrollPane.revalidate();
+    }
+
+    public void openScanner(Consumer<String[]> callback){
+        new Thread(()->{
+            try {
+                System.out.println("in");
+                Webcam.setDriver(new NativeDriver());
+
+                Webcam webcam = Webcam.getDefault();
+                if (webcam == null) {
+                    System.out.println("No webcam detected!");
+                    return;
+                }
+                webcam.setViewSize(WebcamResolution.VGA.getSize());
+
+                webcam.open();
+
+                WebcamPanel wp = new WebcamPanel(webcam);
+                wp.setMirrored(true);
+                wp.setFPSDisplayed(true);
+                JFrame frame = new JFrame("test");
+                frame.setSize(webcam.getViewSize());
+                frame.setLocation(this.getX() + 500, this.getY());
+                frame.add(wp);
+                frame.setVisible(true);
+
+                while (true){
+                    try{
+                        frame.repaint();
+                        BufferedImage image = webcam.getImage();
+                        if(image == null) continue;
+                        if(!frame.isVisible()){
+                            webcam.close();
+                            return;
+                        }
+                        LuminanceSource source = new BufferedImageLuminanceSource(image);
+                        BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+
+                        Result result = new MultiFormatReader().decode(bitmap);
+                        System.out.println("Result: " + result.getText());
+                        callback.accept(result.getText().split(","));
+
+                        webcam.close();
+                        frame.dispose();
+                        break;
+                    } catch (NotFoundException e) {
+                        System.out.println("not found");
+                        Thread.sleep(0);
+                    }
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
+    }
+
+
+    public String generateQRCode(Student student) throws WriterException, IOException {
+        BitMatrix bitMatrix = new MultiFormatWriter().encode(new String(student.toString().getBytes(StandardCharsets.UTF_8)), BarcodeFormat.QR_CODE, 200, 200);
+        Path path = Paths.get(student.getPathName());
+        MatrixToImageWriter.writeToPath(bitMatrix, "PNG", path);
+        return student.getPathName();
     }
 
     public void createAccountCSV(){
