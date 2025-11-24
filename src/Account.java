@@ -87,7 +87,7 @@ public class Account {
         this.password = password;
     }
 
-    public List<EventGroup> getListOfEventGroups() {
+    public List<EventGroup> getListOfEventGroup() {
         return listOfEventGroups;
     }
 
