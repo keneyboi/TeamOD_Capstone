@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -22,6 +23,9 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class Atendo extends JFrame{
+
+    private Account account;
+    private String pathname;
     private JPanel mainFrame;
     private JTextField nameTF;
     private JButton generateStudentQRButton;
@@ -36,7 +40,16 @@ public class Atendo extends JFrame{
     private List<Student> list = new ArrayList<>();
 
 
+
     public Atendo() throws IOException, WriterException {
+        /*this.account = account;
+        pathname = "out/" + account.getName();
+        File accountFile = new File(pathname);
+        if(!accountFile.exists()){
+            accountFile.mkdir();
+            System.out.println("Created Account Directory");
+        }*/
+
         setSize(600, 700);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("Attendance Checker");
@@ -44,8 +57,6 @@ public class Atendo extends JFrame{
         setLocationRelativeTo(null);
         setVisible(true);
 
-        generateStudentQRButton.addComponentListener(new ComponentAdapter() {
-        });
         generateStudentQRButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -73,8 +84,6 @@ public class Atendo extends JFrame{
                 image.setIcon(null);
             }
         });
-
-
         readQRButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -118,6 +127,8 @@ public class Atendo extends JFrame{
                 webcam.open();
 
                 WebcamPanel wp = new WebcamPanel(webcam);
+                wp.setMirrored(true);
+                wp.setFPSDisplayed(true);
                 JFrame frame = new JFrame("test");
                 frame.setSize(webcam.getViewSize());
                 frame.setLocation(this.getX() + 500, this.getY());
@@ -145,7 +156,7 @@ public class Atendo extends JFrame{
                         break;
                     } catch (NotFoundException e) {
                         System.out.println("not found");
-                        Thread.sleep(300);
+                        Thread.sleep(0);
                     }
                 }
             } catch (Exception e) {
@@ -153,6 +164,9 @@ public class Atendo extends JFrame{
             }
         }).start();
     }
+
+
+
 
     public static void main(String[] args) {
         try{

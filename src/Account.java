@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.Arrays; // Needed for array comparison
 import java.util.List;
 
@@ -9,21 +8,10 @@ public class Account {
     private List<EventGroup> listOfEventGroups;
 
 
-    public Account(String name, String email, String password, List<EventGroup> listOfEventGroups) {
+    public Account(String name, String email, char[] password) throws InvalidPasswordException {
         setName(name);
         setEmail(email);
-
-        if (password != null) {
-            setPassword(password.toCharArray());
-        } else {
-            throw new IllegalArgumentException("Password cannot be null");
-        }
-
-        if (listOfEventGroups != null) {
-            this.listOfEventGroups = listOfEventGroups;
-        } else {
-            this.listOfEventGroups = new ArrayList<>();
-        }
+        setPassword(password);
     }
 
 
@@ -63,13 +51,13 @@ public class Account {
     }
 
 
-    public void setPassword(char[] password) {
+    public void setPassword(char[] password) throws InvalidPasswordException{
         if (password == null) {
-            throw new IllegalArgumentException("Password cannot be empty!");
+            throw new InvalidPasswordException("Password cannot be empty!");
         }
 
         if (password.length <= 8) {
-            throw new IllegalArgumentException("Password must be above 8 characters.");
+            throw new InvalidPasswordException("Password must be above 8 characters.");
         }
 
         boolean hasSpecialOrNumber = false;
@@ -81,7 +69,7 @@ public class Account {
         }
 
         if (!hasSpecialOrNumber) {
-            throw new IllegalArgumentException("Password must contain at least one number or special character.");
+            throw new InvalidPasswordException("Password must contain at least one number or special character.");
         }
 
         this.password = password;
@@ -89,6 +77,10 @@ public class Account {
 
     public List<EventGroup> getListOfEventGroup() {
         return listOfEventGroups;
+    }
+
+    public String toString(){
+        return name + " : " + email;
     }
 
 }
