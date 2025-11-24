@@ -6,10 +6,10 @@ public class Account {
     private String name;
     private String email;
     private char[] password;
-    private List<Event> listOfEvents;
+    private List<EventGroup> listOfEventGroups;
 
 
-    public Account(String name, String email, String password, List<Event> listOfEvents) {
+    public Account(String name, String email, String password, List<EventGroup> listOfEventGroups) {
         setName(name);
         setEmail(email);
 
@@ -19,10 +19,10 @@ public class Account {
             throw new IllegalArgumentException("Password cannot be null");
         }
 
-        if (listOfEvents != null) {
-            this.listOfEvents = listOfEvents;
+        if (listOfEventGroups != null) {
+            this.listOfEventGroups = listOfEventGroups;
         } else {
-            this.listOfEvents = new ArrayList<>();
+            this.listOfEventGroups = new ArrayList<>();
         }
     }
 
@@ -32,12 +32,12 @@ public class Account {
         return Arrays.equals(this.password, inputPassword.toCharArray());
     }
 
-    public void addEvent(Event e) {
-        listOfEvents.add(e);
+    public void addEventGroup(EventGroup e) {
+        listOfEventGroups.add(e);
     }
 
-    public void removeEvent(Event e) {
-        listOfEvents.remove(e);
+    public void removeEventGroup(EventGroup e) {
+        listOfEventGroups.remove(e);
     }
 
     //Getters & Setters
@@ -87,8 +87,8 @@ public class Account {
         this.password = password;
     }
 
-    public List<Event> getListOfEvents() {
-        return listOfEvents;
+    public List<EventGroup> getListOfEventGroup() {
+        return listOfEventGroups;
     }
 
 }
