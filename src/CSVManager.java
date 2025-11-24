@@ -14,11 +14,6 @@ public class CSVManager {
         return null;
     }
 
-    public List<Person> getListOfAttendees(){
-        return listOfAttendees;
-    }
 
-    public void setListOfAttendees(List<Person> listOfAttendees) {
-        this.listOfAttendees = listOfAttendees;
-    }
+
 }

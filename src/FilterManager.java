@@ -1,4 +1,5 @@
 import java.util.*;
+import java.io.*;
 
 public class FilterManager {
     private Event event;
@@ -19,14 +20,15 @@ public class FilterManager {
         return multiFilter(copy, order, filter);
     }
 
-    public void filterCSV(CSVManager csv, String order){
-        csv.setListOfAttendees(singleFilter(csv.getListOfAttendees(), order));
-        csv.createCSVFile();
+    public void filterCSV(String order){
+        List<Person> copy = new ArrayList<>(filteredList);
+        updateCSVFile(singleFilter(copy, order));
     }
 
     public void filterCSV(CSVManager csv, String[] order, String filter){
-        csv.setListOfAttendees(multiFilter(csv.getListOfAttendees(), order, filter));
-        csv.createCSVFile();
+        List<Person> copy = new ArrayList<>(filteredList);
+        updateCSVFile(multiFilter(copy, order, filter));
+
     }
 
     public String[] getPrintableList(){
@@ -36,6 +38,17 @@ public class FilterManager {
             result[i] = filteredList.get(i).toString();
         }
         return result;
+    }
+
+    private void updateCSVFile(List<Person> copy){
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(event.getPathName()))){
+            for(Person p : copy){
+                bw.write(p.toString());
+                bw.newLine();
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     private List<Person> singleFilter(List<Person> toFilter, String order) {

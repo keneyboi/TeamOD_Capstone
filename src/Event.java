@@ -12,6 +12,7 @@ public class Event {
 
     }
 
+
     public String getName() {
         return name;
     }
@@ -22,5 +23,9 @@ public class Event {
 
     public List<Person> getListOfAttendees() {
         return listOfAttendees;
+    }
+
+    public String getPathName() {
+        return pathName;
     }
 }
