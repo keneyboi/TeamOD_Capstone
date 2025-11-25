@@ -11,69 +11,28 @@ public class FilterManager {
     }
 
     public List<Person> filterList(String order){
-        List<Person> copy = new ArrayList<>(filteredList);
-        return singleFilter(copy, order);
-    }
-
-    public List<Person> filterList(String[] order, String filter){
-        List<Person> copy = new ArrayList<>(filteredList);
-        return multiFilter(copy, order, filter);
-    }
-
-    public void filterCSV(String order){
-        List<Person> copy = new ArrayList<>(filteredList);
-        updateCSVFile(singleFilter(copy, order));
-    }
-
-    public void filterCSV(CSVManager csv, String[] order, String filter){
-        List<Person> copy = new ArrayList<>(filteredList);
-        updateCSVFile(multiFilter(copy, order, filter));
-
-    }
-
-    public String[] getPrintableList(){
-
-        String[] result = new String[filteredList.size()];
-        for (int i = 0; i < filteredList.size(); i++) {
-            result[i] = filteredList.get(i).toString();
-        }
-        return result;
-    }
-
-    private void updateCSVFile(List<Person> copy){
-        try(BufferedWriter bw = new BufferedWriter(new FileWriter(event.getPathName()))){
-            for(Person p : copy){
-                bw.write(p.toString());
-                bw.newLine();
-            }
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-    }
-
-    private List<Person> singleFilter(List<Person> toFilter, String order) {
         switch(order.toLowerCase()){
             case "name":
-                toFilter.sort(new Filters.FilterByName());
+                filteredList.sort(new Filters.FilterByName());
                 break;
             case "time":
-                toFilter.sort(new Filters.FilterByTime());
+                filteredList.sort(new Filters.FilterByTime());
                 break;
             case "year":
-                toFilter.sort(new Filters.FilterByYear());
+                filteredList.sort(new Filters.FilterByYear());
                 break;
             default:
                 System.out.println("Invalid order");
 
         }
-        return toFilter;
+        return filteredList;
     }
 
-    private List<Person> multiFilter(List<Person> toFilter, String[] order, String filter){
+    public List<Person> filterList(String[] orders, String filter){
         List<Person> result = new ArrayList<>();
 
-        for(String key : order){
-            Iterator<Person> iterator = toFilter.iterator();
+        for(String key : orders){
+            Iterator<Person> iterator = filteredList.iterator();
             while(iterator.hasNext()){
                 Person p = iterator.next();
                 Student s = (Student) p;
@@ -90,17 +49,30 @@ public class FilterManager {
                 }
             }
         }
-        result.addAll(toFilter);
+        result.addAll(filteredList);
+        filteredList.clear();
+        filteredList.addAll(result);
         return result;
     }
 
+    public void filterCSV(String order){
+        filterList(order);
+        CSVManager.createCSVFile(filteredList, event.getPathName());
+    }
 
+    public void filterCSV(String[] orders, String filter){
+        filterList(orders, filter);
+        CSVManager.createCSVFile(filteredList, event.getPathName());
 
+    }
 
+    public String[] getPrintableList(){
 
-
-    
-
-
+        String[] result = new String[filteredList.size()];
+        for (int i = 0; i < filteredList.size(); i++) {
+            result[i] = filteredList.get(i).toString();
+        }
+        return result;
+    }
 
 }
