@@ -87,9 +87,10 @@ public class GUIVersion2 extends JFrame implements ActionListener {
 
     public GUIVersion2(){
 
+        // Preparation Functions Here --> initializes app's resources
         getAccountList();
+        createAccountFolders();
         setTable();
-
 
         setSize(small);
         ImageIcon logo = new ImageIcon("assets/test.png");
@@ -312,7 +313,6 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         }).start();
     }
 
-
     public String generateQRCode(Student student) throws WriterException, IOException {
         BitMatrix bitMatrix = new MultiFormatWriter().encode(new String(student.toString().getBytes(StandardCharsets.UTF_8)), BarcodeFormat.QR_CODE, 200, 200);
         Path path = Paths.get(student.getPathName());
@@ -321,9 +321,6 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     }
 
     public void createAccountCSV(){
-
-
-
         try(BufferedWriter bw = new BufferedWriter(new FileWriter("out/Account/AccountList.csv"))){
             for(Account a : listOfAccounts){
                 System.out.println("Adding: " + a);
@@ -338,6 +335,15 @@ public class GUIVersion2 extends JFrame implements ActionListener {
 
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null,"Unable to create account.csv");
+        }
+    }
+
+    public void createAccountFolders(){
+        for(Account a : listOfAccounts){
+            File file = new File("out/Account/" + a.getName());
+            if (file != null && !file.exists()) {
+                file.mkdirs();
+            }
         }
     }
 
