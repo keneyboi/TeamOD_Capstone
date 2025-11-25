@@ -72,6 +72,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     private JTable scanDisplayTable;
     private JButton scanIDButton;
     private JScrollPane scanScrollPane;
+    private JButton accountExistsBt;
     private List<Account> listOfAccounts = new ArrayList<>();
     private DefaultTableModel dm = new DefaultTableModel();
 
@@ -81,7 +82,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     CardLayout innerCardLayout = (CardLayout)InnerCardPanel.getLayout();
     CardLayout cardLayout = (CardLayout)contentPanel.getLayout();
     JButton[] solveButtons = new JButton[]{createEventBT, createIDBT, scanIDBT, toAdd1, toAdd2};
-    Dimension small = new Dimension(280, 350);
+    Dimension small = new Dimension(300, 400);
     Dimension medium = new Dimension(700, 550);
 
     public GUIVersion2(){
@@ -214,6 +215,12 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                 });
             }
         });
+        accountExistsBt.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cardLayout.show(contentPanel, "LogIn");
+            }
+        });
     }
 
     public void clearTable(){
@@ -314,10 +321,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     }
 
     public void createAccountCSV(){
-        File file = new File("out/Account/AccountList.csv");
-        if (file.getParentFile() != null && !file.getParentFile().exists()) {
-            file.getParentFile().mkdirs();
-        }
+
 
 
         try(BufferedWriter bw = new BufferedWriter(new FileWriter("out/Account/AccountList.csv"))){
@@ -325,7 +329,13 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                 System.out.println("Adding: " + a);
                 bw.write(a.getName() + "," + a.getEmail() + "," + new String(a.getPassword()));
                 bw.newLine();
+
+                File file = new File("out/Account/" + a.getName());
+                if (file != null && !file.exists()) {
+                    file.mkdirs();
+                }
             }
+
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null,"Unable to create account.csv");
         }
