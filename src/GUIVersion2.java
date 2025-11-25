@@ -72,6 +72,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     private JTable scanDisplayTable;
     private JButton scanIDButton;
     private JScrollPane scanScrollPane;
+    private JButton accountExistsBt;
     private List<Account> listOfAccounts = new ArrayList<>();
     private DefaultTableModel dm = new DefaultTableModel();
 
@@ -81,7 +82,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     CardLayout innerCardLayout = (CardLayout)InnerCardPanel.getLayout();
     CardLayout cardLayout = (CardLayout)contentPanel.getLayout();
     JButton[] solveButtons = new JButton[]{createEventBT, createIDBT, scanIDBT, toAdd1, toAdd2};
-    Dimension small = new Dimension(280, 350);
+    Dimension small = new Dimension(300, 400);
     Dimension medium = new Dimension(700, 550);
 
     public GUIVersion2(){
@@ -142,8 +143,13 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                     if(Arrays.compare(createPassPF.getPassword(), createPassConfirmPW.getPassword()) != 0) throw new DefaultErrorException("Passwords don't match");
                     listOfAccounts.add(new Account(createAccTF.getText(), createEmailTF.getText(), createPassPF.getPassword()));
                     createAccountCSV();
+                    createAccTF.setText("");
+                    createEmailTF.setText("");
+                    createPassPF.setText("");
+                    createPassConfirmPW.setText("");
+                    JOptionPane.showMessageDialog(null, "Account successfully created! Please log in.");
                     setSize(small);
-                    cardLayout.show(contentPanel, "Login");
+                    cardLayout.show(contentPanel, "LogIn");
                 } catch (DefaultErrorException ex) {
                     JOptionPane.showMessageDialog(null, ex.getMessage());
                 }catch (InvalidPasswordException ex) {
@@ -207,6 +213,12 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                 openScanner(result->{
                     setStudentFields(result);
                 });
+            }
+        });
+        accountExistsBt.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cardLayout.show(contentPanel, "LogIn");
             }
         });
     }
@@ -309,12 +321,21 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     }
 
     public void createAccountCSV(){
+
+
+
         try(BufferedWriter bw = new BufferedWriter(new FileWriter("out/Account/AccountList.csv"))){
             for(Account a : listOfAccounts){
                 System.out.println("Adding: " + a);
                 bw.write(a.getName() + "," + a.getEmail() + "," + new String(a.getPassword()));
                 bw.newLine();
+
+                File file = new File("out/Account/" + a.getName());
+                if (file != null && !file.exists()) {
+                    file.mkdirs();
+                }
             }
+
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null,"Unable to create account.csv");
         }
