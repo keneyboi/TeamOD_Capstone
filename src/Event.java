@@ -53,7 +53,7 @@ public class Event {
 
     public String toString() {
         //not sure if this was the intended use of toString
-        //haven't included listOfAttendees
+        //haven't included listOfAttendees and pathName
         String next = System.lineSeparator();
         String eventName = "Event: " + name;
         String eventGroupName = "Group: " + eventGroup;
