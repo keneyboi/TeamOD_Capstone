@@ -89,7 +89,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
 
         // Preparation Functions Here --> initializes app's resources
         getAccountList();
-        createAccountFolders();
+        updateAccountFolder();
         setTable();
 
         setSize(small);
@@ -338,7 +338,11 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         }
     }
 
-    public void createAccountFolders(){
+    public void updateAccountFolder(){
+        // this function updates the actual folders in the software
+
+        // Create an algorithm that deletes folders not in the CSV, it indicates a deletion of account ->
+
         File accountsRoot = new File("out/Account");
 
         if (!accountsRoot.exists()) {
