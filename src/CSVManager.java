@@ -19,7 +19,7 @@ public class CSVManager {
     public static void createCSVFile(List<Person> listOfAttendees, String pathName){
         try(BufferedWriter bw = new BufferedWriter(new FileWriter(pathName))){
             for(Person p : listOfAttendees) {
-                bw.write(p.toString());
+                bw.write(Encryption.encrypt(p.toString()));
                 bw.newLine();
             }
         } catch (IOException e) {
