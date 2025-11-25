@@ -142,8 +142,13 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                     if(Arrays.compare(createPassPF.getPassword(), createPassConfirmPW.getPassword()) != 0) throw new DefaultErrorException("Passwords don't match");
                     listOfAccounts.add(new Account(createAccTF.getText(), createEmailTF.getText(), createPassPF.getPassword()));
                     createAccountCSV();
+                    createAccTF.setText("");
+                    createEmailTF.setText("");
+                    createPassPF.setText("");
+                    createPassConfirmPW.setText("");
+                    JOptionPane.showMessageDialog(null, "Account successfully created! Please log in.");
                     setSize(small);
-                    cardLayout.show(contentPanel, "Login");
+                    cardLayout.show(contentPanel, "LogIn");
                 } catch (DefaultErrorException ex) {
                     JOptionPane.showMessageDialog(null, ex.getMessage());
                 }catch (InvalidPasswordException ex) {
@@ -309,6 +314,12 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     }
 
     public void createAccountCSV(){
+        File file = new File("out/Account/AccountList.csv");
+        if (file.getParentFile() != null && !file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
+        }
+
+
         try(BufferedWriter bw = new BufferedWriter(new FileWriter("out/Account/AccountList.csv"))){
             for(Account a : listOfAccounts){
                 System.out.println("Adding: " + a);
