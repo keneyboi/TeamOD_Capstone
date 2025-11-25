@@ -485,6 +485,7 @@
                       <component id="51db3" class="javax.swing.JTable" binding="scanDisplayTable">
                         <constraints/>
                         <properties>
+                          <enabled value="false"/>
                           <fillsViewportHeight value="false"/>
                           <focusable value="false"/>
                           <font name="Arial Rounded MT Bold" size="16" style="1"/>

@@ -12,8 +12,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -101,6 +100,14 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         setMinimumSize(new Dimension(250, 380));
         setResizable(true);
         add(contentPanel);
+
+        //Disable Space
+        usernameTF.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(' '), "none");
+        passwordPF.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(' '), "none");
+        createAccTF.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(' '), "none");
+        createPassPF.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(' '), "none");
+        createEmailTF.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(' '), "none");
+        createPassConfirmPW.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(' '), "none");
 
         createBT.addActionListener(new ActionListener() {
             @Override
@@ -222,6 +229,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                 cardLayout.show(contentPanel, "LogIn");
             }
         });
+
     }
 
     public void clearTable(){
