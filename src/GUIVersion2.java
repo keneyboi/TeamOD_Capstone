@@ -8,6 +8,7 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.common.HybridBinarizer;
 
+import javax.sound.sampled.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -220,6 +221,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                 clearTable();
                 openScanner(result->{
                     setStudentFields(result);
+                    playSound("assets/beep.wav");
                 });
             }
         });
@@ -308,9 +310,9 @@ public class GUIVersion2 extends JFrame implements ActionListener {
 
                         String res = Encryption.decrypt(result.getText());
                         callback.accept(res.split(","));
-
                         webcam.close();
                         frame.dispose();
+
                         break;
                     } catch (NotFoundException e) {
                         System.out.println("not found");
@@ -440,6 +442,18 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         }
         if(e.getSource() == accountBT) innerCardLayout.show(InnerCardPanel, "Account");
         if(e.getSource() == eventGroupBT) innerCardLayout.show(InnerCardPanel, "History");
+    }
+
+    public static void playSound(String pathname) {
+        try {
+            AudioInputStream audio = AudioSystem.getAudioInputStream(new File(pathname));
+            Clip clip = AudioSystem.getClip();
+            clip.open(audio);
+            clip.start();
+        } catch (IOException | LineUnavailableException | UnsupportedAudioFileException var3) {
+            System.out.println("Unable to play sound");
+        }
+
     }
 
     public static void main(String[] args) {
