@@ -361,7 +361,6 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             cardLayout.show(contentPanel, "CreateAccount");
             setSize(small);
         } catch (IOException e) {
-
         }
     }
 
