@@ -339,6 +339,33 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     }
 
     public void createAccountFolders(){
+        File accountsRoot = new File("out/Account");
+
+        if (!accountsRoot.exists()) {
+            accountsRoot.mkdirs();
+        }
+
+        ArrayList<String> validAccount = new ArrayList<>();
+        for (Account a : listOfAccounts) {
+            validAccount.add(a.getName());
+        }
+
+        File[] existingFiles = accountsRoot.listFiles();
+
+        if (existingFiles != null) {
+            for (File file : existingFiles) {
+                if (file.isDirectory()) {
+                    String folderName = file.getName();
+
+                    if (!validAccount.contains(folderName)) {
+                        System.out.println("Deleting account folder: " + folderName);
+                        deleteFile(file);
+                    }
+                }
+            }
+        }
+
+
         for(Account a : listOfAccounts){
             File file = new File("out/Account/" + a.getName());
             if (file != null && !file.exists()) {
@@ -347,11 +374,32 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         }
     }
 
+    private void deleteFile(File toDel) {
+        if (toDel.isDirectory()) {
+            File[] entries = toDel.listFiles();
+            if (entries != null) {
+                for (File entry : entries) {
+                    deleteFile(entry);
+                }
+            }
+        }
+        // Delete the file or empty directory
+        if (!toDel.delete()) {
+            System.err.println("Failed to delete: " + toDel.getAbsolutePath());
+        }
+    }
+
     public void getAccountList(){
         try(BufferedReader br = new BufferedReader(new FileReader("out/Account/AccountList.csv"))){
             String line;
             while((line = br.readLine()) != null){
+                if(line.trim().isEmpty()) {
+                    continue;
+                }
                 String[] tokens = line.split(",");
+                if(tokens.length < 3) {
+                    continue;
+                }
                 listOfAccounts.add(new Account(tokens[0], tokens[1], tokens[2].toCharArray()));
             }
         } catch (InvalidPasswordException e) {
