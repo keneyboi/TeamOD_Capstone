@@ -2,10 +2,6 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class Encryption {
-    private int getPosition(int i){
-        return i * 2 - 1;
-    }
-
     public static String encrypt(String s){
 
         Random random = new Random();
@@ -54,7 +50,7 @@ public class Encryption {
         int count = 0;
         int decryptSize = s.length();
         char[] string = s.toCharArray();
-        char[] decrypted = new char[decryptSize/3];
+        char[] decrypted = new char[decryptSize/3 + 1];
         char key = string[decryptSize - 1];
         int dec, inc;
         if(key == '*'){
@@ -80,9 +76,4 @@ public class Encryption {
         return new String(decrypted);
     }
 
-    public static void main(String[] args) {
-        String s = encrypt("mochisaaan,joshuagabison@gmail.com,*usjr1234");
-        System.out.println(s);
-        System.out.println(decrypt(s));
-    }
 }

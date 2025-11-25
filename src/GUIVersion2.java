@@ -261,11 +261,13 @@ public class GUIVersion2 extends JFrame implements ActionListener {
 
     public void openScanner(Consumer<String[]> callback){
         new Thread(()->{
+            Webcam webcam = null;
+            JFrame frame = new JFrame("test");
             try {
                 System.out.println("in");
                 Webcam.setDriver(new NativeDriver());
 
-                Webcam webcam = Webcam.getDefault();
+                webcam = Webcam.getDefault();
                 if (webcam == null) {
                     System.out.println("No webcam detected!");
                     return;
@@ -277,7 +279,6 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                 WebcamPanel wp = new WebcamPanel(webcam);
                 wp.setMirrored(true);
                 wp.setFPSDisplayed(true);
-                JFrame frame = new JFrame("test");
                 frame.setSize(webcam.getViewSize());
                 frame.setLocation(this.getX() + 500, this.getY());
                 frame.add(wp);
@@ -296,8 +297,9 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                         BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
 
                         Result result = new MultiFormatReader().decode(bitmap);
-                        System.out.println("Result: " + result.getText());
-                        callback.accept(result.getText().split(","));
+
+                        String res = Encryption.decrypt(result.getText());
+                        callback.accept(res.split(","));
 
                         webcam.close();
                         frame.dispose();
@@ -308,13 +310,16 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                     }
                 }
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                JOptionPane.showMessageDialog(null, "Invalid ID");
+                frame.dispose();
+                webcam.close();
             }
         }).start();
     }
 
     public String generateQRCode(Student student) throws WriterException, IOException {
-        BitMatrix bitMatrix = new MultiFormatWriter().encode(new String(student.toString().getBytes(StandardCharsets.UTF_8)), BarcodeFormat.QR_CODE, 200, 200);
+        String data = Encryption.encrypt(student.toString());
+        BitMatrix bitMatrix = new MultiFormatWriter().encode(new String(data.getBytes(StandardCharsets.UTF_8)), BarcodeFormat.QR_CODE, 200, 200);
         Path path = Paths.get(student.getPathName());
         MatrixToImageWriter.writeToPath(bitMatrix, "PNG", path);
         return student.getPathName();
@@ -324,7 +329,8 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         try(BufferedWriter bw = new BufferedWriter(new FileWriter("out/Account/AccountList.csv"))){
             for(Account a : listOfAccounts){
                 System.out.println("Adding: " + a);
-                bw.write(a.getName() + "," + a.getEmail() + "," + new String(a.getPassword()));
+                String data = Encryption.encrypt(a.getName() + "," + a.getEmail() + "," + new String(a.getPassword()));
+                bw.write(data);
                 bw.newLine();
 
                 File file = new File("out/Account/" + a.getName());
@@ -400,7 +406,8 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                 if(line.trim().isEmpty()) {
                     continue;
                 }
-                String[] tokens = line.split(",");
+                String data = Encryption.decrypt(line);
+                String[] tokens = data.split(",");
                 if(tokens.length < 3) {
                     continue;
                 }
