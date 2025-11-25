@@ -71,7 +71,9 @@ public class Account {
             throw new InvalidPasswordException("Password must contain at least one number or special character.");
         }
 
-        this.password = password;
+        String temp = new String(password);
+        temp.replaceAll("\u0000", "");
+        this.password = temp.toCharArray();
     }
 
     public List<EventGroup> getListOfEventGroup() {
