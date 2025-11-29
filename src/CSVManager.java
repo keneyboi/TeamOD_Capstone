@@ -16,14 +16,95 @@ public class CSVManager {
     }
 
     //returns csv file's path name
-    public static void createCSVFile(List<Person> listOfAttendees, String pathName){
+    public static void createCSVFile(List<?> list, String pathName, String label){
         try(BufferedWriter bw = new BufferedWriter(new FileWriter(pathName))){
-            for(Person p : listOfAttendees) {
-                bw.write(Encryption.encrypt(p.toString()));
+            bw.write(label);
+            bw.newLine();
+            for(int i = 0; i < list.size(); i++){
+                bw.write(list.get(i).toString());
                 bw.newLine();
             }
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "CSV File not created!");
         }
     }
+
+    public static List<?> getFromCSV(String pathname) throws DefaultErrorException {
+        List<Account> accounts = new ArrayList<>();
+        List<Person> persons = new ArrayList<>();
+        String label = null;
+
+        try(BufferedReader br = new BufferedReader(new FileReader(pathname))){
+            label = br.readLine();
+            String line;
+            String[] tokens;
+
+            while((line = br.readLine()) != null){
+                switch(label){
+                    case "Account":
+                        if (line.trim().isEmpty()) {
+                            continue;
+                        }
+                        tokens = line.split(",");
+                        accounts.add(new Account(tokens[0], tokens[1], tokens[2].toCharArray()));
+                        break;
+                    case "Event":
+                        tokens = line.split(",");
+                        persons.add(new Student(tokens[0], tokens[1], tokens[2], tokens[3], tokens[4]));
+                        break;
+                    default:
+                        JOptionPane.showMessageDialog(null, "Invalid File");
+                        throw new IOException();
+                }
+            }
+        } catch (InvalidPasswordException e) {
+            throw new DefaultErrorException(e.getMessage());
+        } catch (FileNotFoundException e) {
+            throw new DefaultErrorException("File not found");
+        } catch (IOException e) {
+            throw new DefaultErrorException("File access problem");
+        }
+        if(label == null) throw new DefaultErrorException("No labeling in CSV");
+        if(label.equals("Account")){
+            return accounts;
+        } else {
+            return persons;
+        }
+
+    }
+
+    /*
+
+
+    public static List<Account> getAccountList(){
+        List<Account> listOfAccounts = new ArrayList<>();
+        try(BufferedReader br = new BufferedReader(new FileReader("out/Account/AccountList.csv"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.trim().isEmpty()) {
+                    continue;
+                }
+                String data = Encryption.decrypt(line);
+                String[] tokens = data.split(",");
+                listOfAccounts.add(new Account(tokens[0], tokens[1], tokens[2].toCharArray()));
+            }
+            return listOfAccounts;
+        } catch (InvalidPasswordException e){
+            JOptionPane.showMessageDialog(null,e.getMessage());
+            return null;
+        } catch (FileNotFoundException e) {
+            JOptionPane.showMessageDialog(null,"No Accounts Available");
+            /*
+            remember to add this to get account.
+
+            cardLayout.show(contentPanel, "CreateAccount");
+            setSize(small);
+
+            return null;
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null,"File access problem");
+            return null;
+        }
+        }
+    */
 }

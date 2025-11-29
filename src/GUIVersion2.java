@@ -86,29 +86,8 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     Dimension medium = new Dimension(700, 550);
 
     public GUIVersion2(){
-
-        // Preparation Functions Here --> initializes app's resources
-        getAccountList();
-        updateAccountFolder();
-        setTable();
-
-        setSize(small);
-        ImageIcon logo = new ImageIcon("assets/test.png");
-        Image newLogo = logo.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-        logoLabel.setIcon(new ImageIcon(newLogo));
-        setTitle("Attendo");
-        setLocationRelativeTo(null);
-        setMinimumSize(new Dimension(250, 380));
-        setResizable(true);
-        add(contentPanel);
-
-        //Disable Space
-        usernameTF.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(' '), "none");
-        passwordPF.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(' '), "none");
-        createAccTF.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(' '), "none");
-        createPassPF.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(' '), "none");
-        createEmailTF.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(' '), "none");
-        createPassConfirmPW.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(' '), "none");
+        initializeDataSegments();
+        setVisible(true);
 
         createBT.addActionListener(new ActionListener() {
             @Override
@@ -122,13 +101,6 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             }
         });
 
-        accountBT.addActionListener(this);
-        eventGroupBT.addActionListener(this);
-        for(JButton b : solveButtons){
-            b.addActionListener(this);
-        }
-
-        setVisible(true);
         DashboardButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -136,6 +108,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                 else DashBoard.setVisible(true);
             }
         });
+
         createNewAccountButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -143,43 +116,33 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                 setSize(small);
             }
         });
+
         accountCreationBt.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    if(createAccTF.getText().isEmpty()) throw new DefaultErrorException("Enter Valid Username!");
-                    if(!createEmailTF.getText().endsWith("@gmail.com")) throw new DefaultErrorException("Enter Valid Email!");
-                    if(Arrays.compare(createPassPF.getPassword(), createPassConfirmPW.getPassword()) != 0) throw new DefaultErrorException("Passwords don't match");
-                    listOfAccounts.add(new Account(createAccTF.getText(), createEmailTF.getText(), createPassPF.getPassword()));
                     createAccountCSV();
-                    createAccTF.setText("");
-                    createEmailTF.setText("");
-                    createPassPF.setText("");
-                    createPassConfirmPW.setText("");
-                    JOptionPane.showMessageDialog(null, "Account successfully created! Please log in.");
-                    setSize(small);
-                    cardLayout.show(contentPanel, "LogIn");
-                } catch (DefaultErrorException ex) {
-                    JOptionPane.showMessageDialog(null, ex.getMessage());
-                }catch (InvalidPasswordException ex) {
+                } catch (DefaultErrorException error) {
+                    JOptionPane.showMessageDialog(null, error.getMessage());
+                } catch (InvalidPasswordException ex) {
                     JOptionPane.showMessageDialog(null, ex.getMessage());
                     createPassPF.setText("");
                     createPassConfirmPW.setText("");
                 }
+
             }
         });
 
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                getAccountList();
                 for(Account a : listOfAccounts){
                     if((a.getEmail().equals(usernameTF.getText()) || a.getName().equals(usernameTF.getText())) && Arrays.compare(a.getPassword(), passwordPF.getPassword()) == 0){
                         currentAccount = a;
                         JOptionPane.showMessageDialog(null, "Login Success");
                         cardLayout.show(contentPanel, "MainMenu");
-                        setSize(medium);
                         setLocationRelativeTo(null);
+                        setSize(medium);
                         return;
                     }
                 }
@@ -191,7 +154,6 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Student s = new Student(nameTF.getText(), IDTF.getText(), sectionTF.getText(), courseTF.getText(), yearTF.getText());
-
                 try {
                     ImageIcon img = new ImageIcon(generateQRCode(s));
                     generateQRImageLabel.setIcon(img);
@@ -214,6 +176,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                 generateQRImageLabel.setIcon(null);
             }
         });
+
         scanIDButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -225,6 +188,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                 });
             }
         });
+
         accountExistsBt.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -232,6 +196,49 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             }
         });
 
+    }
+
+    public void initializeDataSegments(){
+        try {
+            listOfAccounts = (List<Account>)CSVManager.getFromCSV("out/Account/AccountList.csv");
+            for(Account a : listOfAccounts){
+                System.out.println(a);
+            }
+        } catch (DefaultErrorException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+        updateAccountFolder();
+        setTable();
+
+        for(Account a : listOfAccounts){
+            System.out.println(a);
+        }
+
+        setSize(small);
+        ImageIcon logo = new ImageIcon("assets/test.png");
+        Image newLogo = logo.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        logoLabel.setIcon(new ImageIcon(newLogo));
+        setTitle("Attendo");
+        setLocationRelativeTo(null);
+        setMinimumSize(new Dimension(250, 380));
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setResizable(true);
+        add(contentPanel);
+
+        //Disable Space
+        usernameTF.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(' '), "none");
+        passwordPF.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(' '), "none");
+        createAccTF.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(' '), "none");
+        createPassPF.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(' '), "none");
+        createEmailTF.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(' '), "none");
+        createPassConfirmPW.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(' '), "none");
+
+        // adding of action listeners
+        accountBT.addActionListener(this);
+        eventGroupBT.addActionListener(this);
+        for(JButton b : solveButtons){
+            b.addActionListener(this);
+        }
     }
 
     public void clearTable(){
@@ -255,7 +262,6 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     }
 
     public void setTable(){
-        System.out.println("called set table");
         scanDisplayTable.setModel(dm);
         dm.addColumn("Label");
         dm.addColumn("Value");
@@ -335,30 +341,36 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         return student.getPathName();
     }
 
-    public void createAccountCSV(){
-        try(BufferedWriter bw = new BufferedWriter(new FileWriter("out/Account/AccountList.csv"))){
-            for(Account a : listOfAccounts){
-                System.out.println("Adding: " + a);
-                String data = Encryption.encrypt(a.getName() + "," + a.getEmail() + "," + new String(a.getPassword()));
-                bw.write(data);
-                bw.newLine();
+    public void createAccountCSV() throws DefaultErrorException, InvalidPasswordException {
+        if(createAccTF.getText().isEmpty()) throw new DefaultErrorException("Enter Valid Username!");
+        if(!createEmailTF.getText().endsWith("@gmail.com")) throw new DefaultErrorException("Enter Valid Email!");
+        if(Arrays.compare(createPassPF.getPassword(), createPassConfirmPW.getPassword()) != 0) throw new DefaultErrorException("Passwords don't match");
+        listOfAccounts.add(new Account(createAccTF.getText(), createEmailTF.getText(), createPassPF.getPassword()));
+        createAccTF.setText("");
+        createEmailTF.setText("");
+        createPassPF.setText("");
+        createPassConfirmPW.setText("");
+        JOptionPane.showMessageDialog(null, "Account successfully created! Please log in.");
+        setSize(small);
+        cardLayout.show(contentPanel, "LogIn");
 
-                File file = new File("out/Account/" + a.getName());
-                if (file != null && !file.exists()) {
-                    file.mkdirs();
-                }
+        CSVManager.createCSVFile(listOfAccounts, "out/Account/AccountList.csv", "Account");
+
+        try {
+            listOfAccounts = (List<Account>) CSVManager.getFromCSV("out/Account/AccountList.csv");
+        } catch (DefaultErrorException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
+
+        for(Account a : listOfAccounts){
+            File file = new File("out/Account/" + a.getName());
+            if (file != null && !file.exists()) {
+                file.mkdirs();
             }
-
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null,"Unable to create account.csv");
         }
     }
 
     public void updateAccountFolder(){
-        // this function updates the actual folders in the software
-
-        // Create an algorithm that deletes folders not in the CSV, it indicates a deletion of account ->
-
         File accountsRoot = new File("out/Account");
 
         if (!accountsRoot.exists()) {
@@ -368,6 +380,10 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         ArrayList<String> validAccount = new ArrayList<>();
         for (Account a : listOfAccounts) {
             validAccount.add(a.getName());
+            File file = new File("out/Account/" + a.getName());
+            if (file != null && !file.exists()) {
+                file.mkdirs();
+            }
         }
 
         File[] existingFiles = accountsRoot.listFiles();
@@ -406,30 +422,6 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         // Delete the file or empty directory
         if (!toDel.delete()) {
             System.err.println("Failed to delete: " + toDel.getAbsolutePath());
-        }
-    }
-
-    public void getAccountList(){
-        try(BufferedReader br = new BufferedReader(new FileReader("out/Account/AccountList.csv"))){
-            String line;
-            while((line = br.readLine()) != null){
-                if(line.trim().isEmpty()) {
-                    continue;
-                }
-                String data = Encryption.decrypt(line);
-                String[] tokens = data.split(",");
-                if(tokens.length < 3) {
-                    continue;
-                }
-                listOfAccounts.add(new Account(tokens[0], tokens[1], tokens[2].toCharArray()));
-            }
-        } catch (InvalidPasswordException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
-        } catch (FileNotFoundException e) {
-            JOptionPane.showMessageDialog(null,"No Accounts Available");
-            cardLayout.show(contentPanel, "CreateAccount");
-            setSize(small);
-        } catch (IOException e) {
         }
     }
 

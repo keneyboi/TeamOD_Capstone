@@ -57,12 +57,12 @@ public class FilterManager {
 
     public void filterCSV(String order){
         filterList(order);
-        CSVManager.createCSVFile(filteredList, event.getPathName());
+        CSVManager.createCSVFile(filteredList, event.getPathName(), "Event");
     }
 
     public void filterCSV(String[] orders, String filter){
         filterList(orders, filter);
-        CSVManager.createCSVFile(filteredList, event.getPathName());
+        CSVManager.createCSVFile(filteredList, event.getPathName(), "Event");
 
     }
 

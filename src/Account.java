@@ -80,8 +80,12 @@ public class Account {
         return listOfEventGroups;
     }
 
+    public String csvFormat(){
+        return name + "," + email + "," + new String(password);
+    }
+
     public String toString(){
-        return name + " : " + email;
+        return name + "," + email + "," + new String(password);
     }
 
 }
