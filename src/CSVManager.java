@@ -49,6 +49,9 @@ public class CSVManager {
                         accounts.add(new Account(tokens[0], tokens[1], tokens[2].toCharArray()));
                         break;
                     case "Event":
+                        if (line.trim().isEmpty()) {
+                            continue;
+                        }
                         tokens = line.split(",");
                         persons.add(new Student(tokens[0], tokens[1], tokens[2], tokens[3], tokens[4]));
                         break;
@@ -72,39 +75,4 @@ public class CSVManager {
         }
 
     }
-
-    /*
-
-
-    public static List<Account> getAccountList(){
-        List<Account> listOfAccounts = new ArrayList<>();
-        try(BufferedReader br = new BufferedReader(new FileReader("out/Account/AccountList.csv"))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                if (line.trim().isEmpty()) {
-                    continue;
-                }
-                String data = Encryption.decrypt(line);
-                String[] tokens = data.split(",");
-                listOfAccounts.add(new Account(tokens[0], tokens[1], tokens[2].toCharArray()));
-            }
-            return listOfAccounts;
-        } catch (InvalidPasswordException e){
-            JOptionPane.showMessageDialog(null,e.getMessage());
-            return null;
-        } catch (FileNotFoundException e) {
-            JOptionPane.showMessageDialog(null,"No Accounts Available");
-            /*
-            remember to add this to get account.
-
-            cardLayout.show(contentPanel, "CreateAccount");
-            setSize(small);
-
-            return null;
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null,"File access problem");
-            return null;
-        }
-        }
-    */
 }

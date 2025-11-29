@@ -77,6 +77,15 @@
               <text value="Create New Account"/>
             </properties>
           </component>
+          <component id="cda0f" class="javax.swing.JButton" binding="debugButtonButton" default-binding="true">
+            <constraints>
+              <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag top="10" left="10" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <text value="Debug Button"/>
+            </properties>
+          </component>
         </children>
       </grid>
       <grid id="7b387" binding="MainMenu" layout-manager="BorderLayout" hgap="0" vgap="0">
@@ -110,7 +119,7 @@
                   <text value=""/>
                 </properties>
               </component>
-              <component id="c247b" class="javax.swing.JButton" binding="createBT">
+              <component id="c247b" class="javax.swing.JButton" binding="IDBT">
                 <constraints/>
                 <properties>
                   <alignmentY value="0.0"/>
@@ -122,24 +131,8 @@
                   <maximumSize width="100" height="40"/>
                   <minimumSize width="100" height="40"/>
                   <preferredSize width="110" height="40"/>
-                  <text value="Create"/>
+                  <text value="ID"/>
                   <visible value="true"/>
-                </properties>
-              </component>
-              <component id="7ce8a" class="javax.swing.JButton" binding="createEventBT">
-                <constraints/>
-                <properties>
-                  <alignmentY value="0.0"/>
-                  <background color="-12763069"/>
-                  <borderPainted value="false"/>
-                  <contentAreaFilled value="false"/>
-                  <font name="Arial Rounded MT Bold" size="10" style="1"/>
-                  <foreground color="-2170651"/>
-                  <maximumSize width="108" height="50"/>
-                  <minimumSize width="120" height="30"/>
-                  <preferredSize width="120" height="30"/>
-                  <text value="Create Event"/>
-                  <visible value="false"/>
                 </properties>
               </component>
               <component id="43b10" class="javax.swing.JButton" binding="createIDBT">
@@ -174,38 +167,6 @@
                   <visible value="false"/>
                 </properties>
               </component>
-              <component id="3e3b3" class="javax.swing.JButton" binding="toAdd1">
-                <constraints/>
-                <properties>
-                  <alignmentY value="0.0"/>
-                  <background color="-12763069"/>
-                  <borderPainted value="false"/>
-                  <contentAreaFilled value="false"/>
-                  <font name="Arial Rounded MT Bold" size="10" style="1"/>
-                  <foreground color="-2170651"/>
-                  <maximumSize width="108" height="50"/>
-                  <minimumSize width="120" height="30"/>
-                  <preferredSize width="120" height="30"/>
-                  <text value="to add"/>
-                  <visible value="false"/>
-                </properties>
-              </component>
-              <component id="a40df" class="javax.swing.JButton" binding="toAdd2">
-                <constraints/>
-                <properties>
-                  <alignmentY value="0.0"/>
-                  <background color="-12763069"/>
-                  <borderPainted value="false"/>
-                  <contentAreaFilled value="false"/>
-                  <font name="Arial Rounded MT Bold" size="10" style="1"/>
-                  <foreground color="-2170651"/>
-                  <maximumSize width="108" height="50"/>
-                  <minimumSize width="120" height="30"/>
-                  <preferredSize width="120" height="30"/>
-                  <text value="to add"/>
-                  <visible value="false"/>
-                </properties>
-              </component>
               <component id="46bd1" class="javax.swing.JButton" binding="eventGroupBT">
                 <constraints/>
                 <properties>
@@ -220,6 +181,38 @@
                   <preferredSize width="110" height="40"/>
                   <text value="Event Group"/>
                   <visible value="true"/>
+                </properties>
+              </component>
+              <component id="7ce8a" class="javax.swing.JButton" binding="addEventBT">
+                <constraints/>
+                <properties>
+                  <alignmentY value="0.0"/>
+                  <background color="-12763069"/>
+                  <borderPainted value="false"/>
+                  <contentAreaFilled value="false"/>
+                  <font name="Arial Rounded MT Bold" size="10" style="1"/>
+                  <foreground color="-2170651"/>
+                  <maximumSize width="108" height="50"/>
+                  <minimumSize width="120" height="30"/>
+                  <preferredSize width="120" height="30"/>
+                  <text value="Add Event"/>
+                  <visible value="false"/>
+                </properties>
+              </component>
+              <component id="3e3b3" class="javax.swing.JButton" binding="checkAttendanceBT">
+                <constraints/>
+                <properties>
+                  <alignmentY value="0.0"/>
+                  <background color="-12763069"/>
+                  <borderPainted value="false"/>
+                  <contentAreaFilled value="false"/>
+                  <font name="Arial Rounded MT Bold" size="10" style="1"/>
+                  <foreground color="-2170651"/>
+                  <maximumSize width="108" height="50"/>
+                  <minimumSize width="120" height="30"/>
+                  <preferredSize width="120" height="30"/>
+                  <text value="Check Attendance"/>
+                  <visible value="false"/>
                 </properties>
               </component>
               <component id="f84e4" class="javax.swing.JButton" binding="accountBT">
@@ -510,40 +503,123 @@
                   </component>
                 </children>
               </grid>
-              <grid id="2ab2b" binding="hypergeometricPane" layout-manager="GridBagLayout">
+              <grid id="2ab2b" binding="addEventPane" layout-manager="GridBagLayout">
                 <constraints>
-                  <card name="Hypergeometric"/>
+                  <card name="Add Event"/>
                 </constraints>
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="dc2cc" class="javax.swing.JLabel">
+                  <component id="a74b6" class="javax.swing.JLabel">
                     <constraints>
                       <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                      <gridbag weightx="0.0" weighty="0.0"/>
+                      <gridbag top="10" left="15" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
-                      <text value="Hypergeometric"/>
+                      <font name="Arial Rounded MT Bold" size="24" style="1"/>
+                      <text value="Event Creation"/>
+                    </properties>
+                  </component>
+                  <component id="aebda" class="javax.swing.JTextField" binding="eventGroupTF">
+                    <constraints>
+                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="0" indent="0" use-parent-layout="false">
+                        <preferred-size width="150" height="-1"/>
+                      </grid>
+                      <gridbag top="10" left="10" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <minimumSize width="290" height="36"/>
+                      <preferredSize width="290" height="36"/>
+                      <text value=""/>
+                    </properties>
+                  </component>
+                  <component id="7165e" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="15" left="15" bottom="0" right="15" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <text value="Event Group Name"/>
+                    </properties>
+                  </component>
+                  <component id="9b186" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="15" left="15" bottom="0" right="15" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <text value="Event Name:"/>
+                    </properties>
+                  </component>
+                  <component id="420a7" class="javax.swing.JTextField" binding="eventNameTF">
+                    <constraints>
+                      <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="0" indent="0" use-parent-layout="false">
+                        <preferred-size width="150" height="-1"/>
+                      </grid>
+                      <gridbag top="10" left="10" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <minimumSize width="290" height="36"/>
+                      <preferredSize width="290" height="36"/>
+                      <text value=""/>
+                    </properties>
+                  </component>
+                  <component id="87aa" class="javax.swing.JTextField" binding="lateTImeTF">
+                    <constraints>
+                      <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="0" indent="0" use-parent-layout="false">
+                        <preferred-size width="150" height="-1"/>
+                      </grid>
+                      <gridbag top="10" left="10" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <minimumSize width="290" height="36"/>
+                      <preferredSize width="290" height="36"/>
+                      <text value=""/>
+                    </properties>
+                  </component>
+                  <component id="97d86" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="15" left="15" bottom="0" right="15" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <text value="Set Late Time:"/>
+                    </properties>
+                  </component>
+                  <component id="3c01" class="javax.swing.JButton" binding="createEventButton" default-binding="true">
+                    <constraints>
+                      <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag top="20" left="20" bottom="20" right="20" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <text value="Create Event"/>
                     </properties>
                   </component>
                 </children>
               </grid>
-              <grid id="dfc74" binding="historyPane" layout-manager="GridBagLayout">
+              <grid id="dfc74" binding="checkAttendancePane" layout-manager="GridBagLayout">
                 <constraints>
                   <card name="History"/>
                 </constraints>
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="248dd" class="javax.swing.JLabel">
+                  <component id="d2c83" class="javax.swing.JButton" binding="scanAttendanceButton" default-binding="true">
                     <constraints>
-                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag top="10" left="10" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <text value="Scan Attendance"/>
+                    </properties>
+                  </component>
+                  <component id="210bc" class="javax.swing.JButton" binding="stopButton" default-binding="true">
+                    <constraints>
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                       <gridbag weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
-                      <horizontalAlignment value="0"/>
-                      <horizontalTextPosition value="0"/>
-                      <text value="History"/>
+                      <text value="Stop"/>
                     </properties>
                   </component>
                 </children>
@@ -562,6 +638,24 @@
                     </constraints>
                     <properties>
                       <text value="ACCOUNT"/>
+                    </properties>
+                  </component>
+                  <component id="22b33" class="javax.swing.JButton" binding="logOutButton" default-binding="true">
+                    <constraints>
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag top="20" left="20" bottom="20" right="20" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <text value="Log out"/>
+                    </properties>
+                  </component>
+                  <component id="9701d" class="javax.swing.JButton" binding="showAccountBTN">
+                    <constraints>
+                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag top="20" left="20" bottom="20" right="20" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <text value="Show Account Details"/>
                     </properties>
                   </component>
                 </children>

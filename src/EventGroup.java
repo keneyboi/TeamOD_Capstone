@@ -3,27 +3,18 @@ import java.util.List;
 
 public class EventGroup {
     private String name;
-    private String pathName;
+    private Account account;
     private List<Event> listOfEvents;
     private int numOfEvents;
 
-    public EventGroup(){
-        //will remove this once EventGroup class is properly constructed in other classes
-    }
 
-    public EventGroup(String name, String pathName){
+    public EventGroup(String name, Account account){
         this.name = name;
-        this.pathName = pathName;
-        this.listOfEvents = new ArrayList<Event>();
+        this.listOfEvents = new ArrayList<>();
         this.numOfEvents = 0;
+        this.account = account;
     }
 
-    public EventGroup(String name, String pathName, List<Event> listOfEvents){
-        this.name = name;
-        this.pathName = pathName;
-        this.listOfEvents = listOfEvents;
-        this.numOfEvents = listOfEvents.size();
-    }
 
     public void addEvent(Event e) {
         listOfEvents.add(e);
@@ -44,7 +35,7 @@ public class EventGroup {
     }
 
     public String getPathName() {
-        return pathName;
+        return account.getPathname() + "/" + name;
     }
 
     public List<Event> getListOfEvents() {

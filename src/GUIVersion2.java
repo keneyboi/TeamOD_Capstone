@@ -33,22 +33,21 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     private JPanel InnerCardPanel;
     private JPanel DashBoard;
     private JButton DashboardButton;
-    private JButton toAdd2;
-    private JButton toAdd1;
+    private JButton checkAttendanceBT;
     private JButton scanIDBT;
     private JButton createIDBT;
-    private JButton createEventBT;
-    private JButton createBT;
+    private JButton addEventBT;
+    private JButton IDBT;
     private JPanel createEventPane;
     private JPanel createIDPane;
     private JPanel eventGroupPane;
     private JPanel scanIDPane;
-    private JPanel hypergeometricPane;
+    private JPanel addEventPane;
     private JButton eventGroupBT;
     private JButton accountBT;
     private JLabel logoLabel;
     private JPanel accountPane;
-    private JPanel historyPane;
+    private JPanel checkAttendancePane;
     private JTextField usernameTF;
     private JPasswordField passwordPF;
     private JButton loginButton;
@@ -73,6 +72,15 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     private JButton scanIDButton;
     private JScrollPane scanScrollPane;
     private JButton accountExistsBt;
+    private JButton logOutButton;
+    private JButton debugButtonButton;
+    private JButton scanAttendanceButton;
+    private JButton stopButton;
+    private JTextField eventGroupTF;
+    private JButton showAccountBTN;
+    private JButton createEventButton;
+    private JTextField eventNameTF;
+    private JTextField lateTImeTF;
     private List<Account> listOfAccounts = new ArrayList<>();
     private DefaultTableModel dm = new DefaultTableModel();
 
@@ -81,7 +89,8 @@ public class GUIVersion2 extends JFrame implements ActionListener {
 
     CardLayout innerCardLayout = (CardLayout)InnerCardPanel.getLayout();
     CardLayout cardLayout = (CardLayout)contentPanel.getLayout();
-    JButton[] solveButtons = new JButton[]{createEventBT, createIDBT, scanIDBT, toAdd1, toAdd2};
+    JButton[] IDButtons = new JButton[]{createIDBT, scanIDBT};
+    JButton[] EventButtons = new JButton[]{addEventBT, checkAttendanceBT};
     Dimension small = new Dimension(300, 400);
     Dimension medium = new Dimension(700, 550);
 
@@ -89,11 +98,11 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         initializeDataSegments();
         setVisible(true);
 
-        createBT.addActionListener(new ActionListener() {
+        IDBT.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(getHeight() < 530 && !createEventBT.isVisible()) setSize(getWidth(), 530);
-                for(JButton b : solveButtons){
+                if(getHeight() < 530 && !addEventBT.isVisible()) setSize(getWidth(), 530);
+                for(JButton b : IDButtons){
                     if(!b.isVisible()) b.setVisible(true);
                     else b.setVisible(false);
                 }
@@ -139,6 +148,13 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                 for(Account a : listOfAccounts){
                     if((a.getEmail().equals(usernameTF.getText()) || a.getName().equals(usernameTF.getText())) && Arrays.compare(a.getPassword(), passwordPF.getPassword()) == 0){
                         currentAccount = a;
+                        try {
+                            getEventGroupFolder();
+                            assignEventFileToEventGroupDirectory();
+                            showAccountDetails();
+                        } catch (DefaultErrorException ex) {
+                            JOptionPane.showMessageDialog(null, ex.getMessage());
+                        }
                         JOptionPane.showMessageDialog(null, "Login Success");
                         cardLayout.show(contentPanel, "MainMenu");
                         setLocationRelativeTo(null);
@@ -196,8 +212,202 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             }
         });
 
+        logOutButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setSize(small);
+                cardLayout.show(contentPanel, "LogIn");
+            }
+        });
+
+        debugButtonButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setSize(medium);
+                cardLayout.show(contentPanel, "MainMenu");
+            }
+        });
+
+        eventGroupBT.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                for(JButton b : EventButtons){
+                    if(b.isVisible()){
+                        b.setVisible(false);
+                    } else {
+                        b.setVisible(true);
+                    }
+                }
+            }
+        });
+
+        showAccountBTN.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showAccountDetails();
+            }
+        });
+
+        addEventBT.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                innerCardLayout.show(InnerCardPanel, "Add Event");
+            }
+        });
+
+        // creates an event and adds it to its desired eventgroup as well as calls the create event to make an empty .csv file
+        createEventButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean created = false;
+                for(EventGroup eventGroup : currentAccount.getListOfEventGroup()){
+                    if(eventGroup.getName().equals(eventGroupTF.getText())){
+                        try {
+                            eventGroup.addEvent(createEvent(eventNameTF.getText(), lateTImeTF.getText(), eventGroup));
+                            getEventGroupFolder();
+                            assignEventFileToEventGroupDirectory();
+                            showAccountDetails();
+                            created = true;
+                        } catch (DefaultErrorException ex) {
+                            JOptionPane.showMessageDialog(null, ex.getMessage());
+                        }
+                    }
+                }
+                if(!created){
+                    try {
+                        EventGroup eg = createEventGroup(eventGroupTF.getText());
+                        currentAccount.addEventGroup(eg);
+                        eg.addEvent(createEvent(eventNameTF.getText(), lateTImeTF.getText(), eg));
+                        getEventGroupFolder();
+                        assignEventFileToEventGroupDirectory();
+                        showAccountDetails();
+                    } catch (DefaultErrorException ex) {
+                        JOptionPane.showMessageDialog(null, ex.getMessage());
+                    }
+                }
+            }
+        });
+
+        scanAttendanceButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Event test1 = currentAccount.getListOfEventGroup().get(0).getListOfEvents().get(0);
+
+                System.out.println("pressed");
+                openScanner(result->{
+                    try {
+                        recordAttendance(test1, new Student(result[0], result[1], result[2], result[3], result[4]));
+                    } catch (DefaultErrorException ex) {
+                        JOptionPane.showMessageDialog(null, "Unable to record attendance");
+                    }
+                    setStudentFields(result);
+                    playSound("assets/beep.wav");
+                });
+            }
+        });
     }
 
+    // accepts event and person, assigns person to event and adds them also to the csv
+    public void recordAttendance(Event e, Person p) throws DefaultErrorException{
+        try(PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(e.getPathName() + ".csv", true)))){
+            pw.println(p.toString());
+            System.out.println(p.toString());
+            e.addAttendee(p);
+        } catch (IOException ex) {
+            throw new DefaultErrorException("Unable to access file");
+        }
+    }
+
+    // this checks the event group directories under the account
+    // it then assigns it to the list of event groups in the account
+    public void getEventGroupFolder() throws DefaultErrorException {
+        currentAccount.getListOfEventGroup().clear();
+        File file = new File(currentAccount.getPathname());
+        File[] listFiles = file.listFiles();
+        if(listFiles == null) throw new DefaultErrorException("Empty Event Group");
+        for(File f : listFiles){
+            System.out.println("Added Event Group: " + f.getName());
+            currentAccount.addEventGroup(new EventGroup(f.getName(), currentAccount));
+        }
+        for(EventGroup eG : currentAccount.getListOfEventGroup()){
+            System.out.println(eG.getName());
+        }
+    }
+
+    // It initializes the event groups with its events via file handling
+    // it makes use of the getEventViaEventGroup function to get the event and assign it
+    // to the actual event group.
+    public void assignEventFileToEventGroupDirectory(){
+        for(EventGroup e : currentAccount.getListOfEventGroup()){
+            File eventG = new File(e.getPathName());
+            File[] events = eventG.listFiles();
+            for(File f : events){
+                System.out.println(f.getName());
+                if(!f.isDirectory()){
+                    System.out.println(f.getName());
+                    e.addEvent(getEventViaEventGroup(e, f.getName()));
+                }
+            }
+        }
+    }
+
+    public void showAccountDetails(){
+        System.out.println("Account Name: " + currentAccount.getName());
+        for(EventGroup eG : currentAccount.getListOfEventGroup()){
+            System.out.println("Event Group: " + eG.getName());
+            for(Event e : eG.getListOfEvents()){
+                System.out.println("----> Event: " + e.getName() + " Late time: " + e.getLateTime());
+                for(Person p : e.getListOfAttendees()){
+                    System.out.println("---------> " + p.toString());
+                }
+            }
+        }
+    }
+
+    // uses the CSVManager.getFromCsv to pull a list of people and assigns it to an event
+    // note! the first person in the peoples has the name of the late time.
+    // this event is then added to its parameterized Event Group and also initialized it properly
+    public Event getEventViaEventGroup(EventGroup eG, String eventName){
+        List<Person> personList = null;
+        System.out.println(eG.getPathName() + "/" + eventName);
+        try{
+            personList = (List<Person>) CSVManager.getFromCSV(eG.getPathName() + "/" + eventName);
+        } catch (DefaultErrorException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+        String lateTime = personList.get(0).getName();
+        personList.remove(0);
+        Event event = new Event(eventName.replace(".csv", ""), eG, lateTime);
+        event.setListOfAttendees(personList);
+        return event;
+    }
+
+    // adds an event via name and automatically initializes it to the account
+    // it also creates a Directory for it and throws an error if the event group already exists
+    public EventGroup createEventGroup(String name) throws DefaultErrorException {
+        File file = new File(currentAccount.getPathname() + "/" + name);
+        if(file.exists()) throw new DefaultErrorException("Event Group already exists");
+        file.mkdir();
+        EventGroup eventGroup = new EventGroup(name, currentAccount);
+        currentAccount.addEventGroup(eventGroup);
+        for(EventGroup e : currentAccount.getListOfEventGroup()){
+            System.out.println(e.getPathName());
+        }
+        return eventGroup;
+    }
+
+    // creates an empty event and adds it to the desired folder
+    public Event createEvent (String name, String lateTime, EventGroup eg) throws DefaultErrorException {
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(eg.getPathName() + "/" + name + ".csv"))){
+            bw.write("Event\n" + lateTime + ",NULL,NULL,NULL,NULL\n");
+        } catch (IOException e) {
+            throw new DefaultErrorException("File can't be open");
+        }
+        return new Event(name, eg, lateTime);
+    }
+
+
+    // everything that needs to be initialized before set visible is called should all be placed here
     public void initializeDataSegments(){
         try {
             listOfAccounts = (List<Account>)CSVManager.getFromCSV("out/Account/AccountList.csv");
@@ -236,7 +446,10 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         // adding of action listeners
         accountBT.addActionListener(this);
         eventGroupBT.addActionListener(this);
-        for(JButton b : solveButtons){
+        for(JButton b : IDButtons){
+            b.addActionListener(this);
+        }
+        for(JButton b : EventButtons){
             b.addActionListener(this);
         }
     }
@@ -427,7 +640,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        for(JButton b : solveButtons){
+        for(JButton b : IDButtons){
             if(((JButton)(e.getSource())).equals(b)){
                 innerCardLayout.show(InnerCardPanel, b.getActionCommand());
             }
@@ -449,6 +662,18 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     }
 
     public static void main(String[] args) {
+        try {
+            Account test = new Account("Ken", "ken@gmail.com", new char[]{'1', '1', '1','1', '1', '1', 's', '1', '-'});
+            EventGroup eventGroup = new EventGroup("testingEventGroup", test);
+            Event event = new Event("testEvent", eventGroup, "9:20");
+            test.addEventGroup(eventGroup);
+            eventGroup.addEvent(event);
+            System.out.println(event.getPathName());
+
+        } catch (InvalidPasswordException e) {
+            System.out.println("error");
+        }
+
         new GUIVersion2();
     }
 

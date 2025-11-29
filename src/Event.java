@@ -6,17 +6,15 @@ public class Event {
     private EventGroup eventGroup;
     private String lateTime;
     private List<Person> listOfAttendees;
-    private String pathName;
 
     public Event(){
         //will remove this once Event class is properly constructed in other classes
     }
 
-    public Event(String name, EventGroup eventGroup, String lateTime, String pathName) {
+    public Event(String name, EventGroup eventGroup, String lateTime) {
         this.name = name;
         this.eventGroup = eventGroup;
         this.lateTime = lateTime;
-        this.pathName = pathName;
         this.numOfAttendees = 0;
         this.listOfAttendees = new ArrayList<>();
     }
@@ -48,7 +46,11 @@ public class Event {
     }
 
     public String getPathName() {
-        return pathName;
+        return eventGroup.getPathName() + "/" + name;
+    }
+
+    public void setListOfAttendees(List<Person> listOfAttendees){
+        this.listOfAttendees = listOfAttendees;
     }
 
     public String toString() {

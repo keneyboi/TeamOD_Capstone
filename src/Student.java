@@ -17,7 +17,7 @@ public class Student extends Person{
     public String getCourse() {return course;}
     public String getYear() {return year;}
 
-    public String toString(){return super.toString() + "," + section + "," + course + "," + year;}
+    public String toString(){return super.toString() + "," + section + "," + course + "," + year + "," + getTimeIn();}
     public String getPathName(){
         return "out/Student ID Library/" + getInfo() + " (" + getName() + ").png";
     }

@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Arrays; // Needed for array comparison
 import java.util.List;
 
@@ -11,6 +12,7 @@ public class Account {
         setName(name);
         setEmail(email);
         setPassword(password);
+        listOfEventGroups = new ArrayList<>();
     }
 
 
@@ -82,6 +84,10 @@ public class Account {
 
     public String csvFormat(){
         return name + "," + email + "," + new String(password);
+    }
+
+    public String getPathname(){
+        return "out/Account/" + name;
     }
 
     public String toString(){
