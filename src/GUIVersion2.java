@@ -291,6 +291,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         scanAttendanceButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // dynamic using for loop
                 Event test1 = currentAccount.getListOfEventGroup().get(0).getListOfEvents().get(0);
 
                 System.out.println("pressed");
@@ -467,8 +468,8 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     public void setStudentFields(String[] info){
         dm.setValueAt(info[0], 0, 1);
         dm.setValueAt(info[1], 1, 1);
-        dm.setValueAt(info[4], 2, 1);
-        dm.setValueAt(info[3], 3, 1);
+        dm.setValueAt(info[3], 2, 1);
+        dm.setValueAt(info[4], 3, 1);
         dm.setValueAt(info[2], 4, 1);
         scanScrollPane.repaint();
         scanScrollPane.revalidate();

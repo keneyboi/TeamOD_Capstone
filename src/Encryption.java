@@ -78,7 +78,9 @@ public class Encryption {
     }
 
     public static void main(String[] args) {
-        System.out.println(decrypt("c>_ZQIc},8)'`D@dbtgT2^^+\\Z;df;c\\sZ|v8FD@(UA*{8,?I(cJ*aK>mL#?MA0&"));
+        String v = encrypt("hello");
+        System.out.println(v);
+        System.out.println(decrypt(v));
     }
 
 }
