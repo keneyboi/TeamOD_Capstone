@@ -95,6 +95,8 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     private EventGroup eventGroupSelected;
     private static List<Student> resultListStudent;
 
+    private boolean hasLogin = false;
+
     CardLayout innerCardLayout = (CardLayout)InnerCardPanel.getLayout();
     CardLayout cardLayout = (CardLayout)contentPanel.getLayout();
     JButton[] IDButtons = new JButton[]{createIDBT, scanIDBT};
@@ -102,7 +104,8 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     Dimension small = new Dimension(300, 400);
     Dimension medium = new Dimension(700, 550);
 
-    public GUIVersion2(){
+
+    public GUIVersion2() throws DefaultErrorException {
         initializeDataSegments();
         setVisible(true);
 
@@ -158,14 +161,15 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                     if((a.getEmail().equals(usernameTF.getText()) || a.getName().equals(usernameTF.getText())) && Arrays.compare(a.getPassword(), passwordPF.getPassword()) == 0){
                         currentAccount = a;
                         try {
-                            getEventGroupFolder();
-                            assignEventFileToEventGroupDirectory();
-                            showAccountDetails();
-                            addEventCB();
-                            updateDataSegments();
+                            if (hasLogin == false){
+                                initializeFiles();
+                                hasLogin = true;
+                            }
                         } catch (DefaultErrorException ex) {
                             JOptionPane.showMessageDialog(null, ex.getMessage());
                         }
+                        usernameTF.setText("");
+                        passwordPF.setText("");
                         JOptionPane.showMessageDialog(null, "Login Success");
                         cardLayout.show(contentPanel, "MainMenu");
                         setLocationRelativeTo(null);
@@ -875,10 +879,17 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                 System.out.println("Student Already Logged Attendance");
             }
         }
-
     }
 
-    public static void main(String[] args) {
+    public void initializeFiles() throws DefaultErrorException {
+        getEventGroupFolder();
+        assignEventFileToEventGroupDirectory();
+        showAccountDetails();
+        addEventCB();
+        updateDataSegments();
+    }
+
+    public static void main(String[] args) throws DefaultErrorException {
         try {
             Account test = new Account("Ken", "ken@gmail.com", new char[]{'1', '1', '1','1', '1', '1', 's', '1', '-'});
             EventGroup eventGroup = new EventGroup("testingEventGroup", test);
