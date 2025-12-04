@@ -1,12 +1,6 @@
-import com.github.eduramiba.webcamcapture.drivers.NativeDriver;
-import com.github.sarxos.webcam.Webcam;
-import com.github.sarxos.webcam.WebcamPanel;
-import com.github.sarxos.webcam.WebcamResolution;
 import com.google.zxing.*;
-import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
-import com.google.zxing.common.HybridBinarizer;
 
 import javax.sound.sampled.*;
 import javax.swing.*;
@@ -14,7 +8,6 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.Dimension;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -22,7 +15,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class GUIVersion2 extends JFrame implements ActionListener {
     private JPanel contentPanel;
@@ -37,8 +29,8 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     private JButton scanIDBT;
     private JButton createIDBT;
     private JButton addEventBT;
-    private JButton IDBT;
-    private JPanel createEventPane;
+    private JButton mainScreenBT;
+    private JPanel mainScreenPane;
     private JPanel createIDPane;
     private JPanel eventGroupPane;
     private JPanel scanIDPane;
@@ -83,9 +75,16 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     private JTextField lateTImeTF;
     private List<Account> listOfAccounts = new ArrayList<>();
     private DefaultTableModel dm = new DefaultTableModel();
+    private ScannerCamera camera;
 
     // added for event selection
     private JComboBox<String> eventSelectCB;
+    private JComboBox comboBox1;
+    private JButton scanLogoHereButton;
+    private JButton addNewBTN;
+    private JButton attendeesBTN;
+    private JButton changeEventBTN;
+    private JButton accountBTN;
     private Event eventSelected;
 
     private Account currentAccount;
@@ -102,7 +101,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         initializeDataSegments();
         setVisible(true);
 
-        IDBT.addActionListener(new ActionListener() {
+        mainScreenBT.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(getHeight() < 530 && !addEventBT.isVisible()) setSize(getWidth(), 530);
@@ -203,10 +202,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("pressed");
                 clearTable();
-                openScanner(result->{
-                    setStudentFields(result);
-                    playSound("assets/beep.wav");
-                });
+
             }
         });
 
@@ -305,9 +301,11 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                     return;
                 }
                 // dynamic using for loop
+
                 Event test1 = currentAccount.getListOfEventGroup().get(0).getListOfEvents().get(0);
 
                 System.out.println("pressed");
+                /*
                 openScanner(result->{
                     try {
                         recordAttendance(eventSelected, new Student(result[0], result[1], result[2], result[3], result[4]));
@@ -317,6 +315,8 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                     setStudentFields(result);
                     playSound("assets/beep.wav");
                 });
+
+                 */
             }
         });
 
@@ -565,7 +565,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         scanScrollPane.revalidate();
     }
 
-    public void openScanner(Consumer<String[]> callback){
+    /* public void openScanner(Consumer<String[]> callback){
         new Thread(()->{
             Webcam webcam = null;
             JFrame frame = new JFrame("test");
@@ -622,6 +622,8 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             }
         }).start();
     }
+
+     */
 
     public String generateQRCode(Student student) throws WriterException, IOException {
         String data = Encryption.encrypt(student.toString());

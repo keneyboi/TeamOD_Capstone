@@ -50,7 +50,7 @@ public class Encryption {
         int count = 0;
         int decryptSize = s.length();
         char[] string = s.toCharArray();
-        char[] decrypted = new char[decryptSize/3];
+        char[] decrypted = new char[decryptSize/3 ];
         char key = string[decryptSize - 1];
         int dec, inc;
         if(key == '*'){
