@@ -39,7 +39,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     private JButton accountBT;
     private JLabel logoLabel;
     private JPanel accountPane;
-    private JPanel checkAttendancePane;
+    private JPanel eventDetailsPane;
     private JTextField usernameTF;
     private JPasswordField passwordPF;
     private JButton loginButton;
@@ -67,7 +67,6 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     private JButton logOutButton;
     private JButton debugButtonButton;
     private JButton scanAttendanceButton;
-    private JButton stopButton;
     private JTextField eventGroupTF;
     private JButton showAccountBTN;
     private JButton createEventButton;
@@ -88,6 +87,14 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     private JComboBox mainGroupCB;
     private JPanel TopBorderPanel;
     private JLabel usernameLabel;
+    private JComboBox eventGroupCB;
+    private JComboBox comboBox1;
+    private JComboBox comboBox2;
+    private JButton backButton;
+    private JButton backButton2;
+    private JButton backButton1;
+    private JButton seeAttendanceButton;
+    private JButton backButton3;
 
     // selected data segments
     private Account currentAccount;
@@ -224,14 +231,6 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             }
         });
 
-        logOutButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setSize(small);
-                cardLayout.show(contentPanel, "LogIn");
-            }
-        });
-
         debugButtonButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -332,59 +331,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             }
         });
 
-        scanAttendanceButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(eventSelected == null) {
-                    JOptionPane.showMessageDialog(null, "Please select an event first!");
-                    return;
-                }
-                // dynamic using for loop
 
-                Event test1 = currentAccount.getListOfEventGroup().get(0).getListOfEvents().get(0);
-
-                System.out.println("pressed");
-                /*
-                openScanner(result->{
-                    try {
-                        recordAttendance(eventSelected, new Student(result[0], result[1], result[2], result[3], result[4]));
-                    } catch (DefaultErrorException ex) {
-                        JOptionPane.showMessageDialog(null, "Unable to record attendance");
-                    }
-                    setStudentFields(result);
-                    playSound("assets/beep.wav");
-                });
-
-                 */
-            }
-        });
-
-        eventSelectCB.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String selected = (String) eventSelectCB.getSelectedItem();
-                if(selected != null) {
-                    if(selected.equals("<No Events>")){
-                        eventSelectCB.setSelectedItem(null);
-                        return;
-                    }
-                    String[] parts = selected.split(" - ");
-                    String eventGroupName = parts[0];
-                    String eventName = parts[1];
-
-                    for(EventGroup eg : currentAccount.getListOfEventGroup()) {
-                        if(eg.getName().equals(eventGroupName)) {
-                            for(Event event : eg.getListOfEvents()) {
-                                if(event.getName().equals(eventName)) {
-                                    eventSelected = event;
-                                    return;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        });
         mainGroupCB.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -433,6 +380,51 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 innerCardLayout.show(InnerCardPanel, "Create ID");
+            }
+        });
+        eventDetailsBTN.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("pressed");
+                innerCardLayout.show(InnerCardPanel, "Event Details");
+            }
+        });
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                innerCardLayout.show(InnerCardPanel, "Main Screen");
+            }
+        });
+        backButton2.addComponentListener(new ComponentAdapter() {
+        });
+        backButton2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                innerCardLayout.show(InnerCardPanel, "Main Screen");
+            }
+        });
+        newEventBTN.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                innerCardLayout.show(InnerCardPanel, "Add Event");
+            }
+        });
+        backButton1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                innerCardLayout.show(InnerCardPanel, "Main Screen");
+            }
+        });
+        backButton3.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                innerCardLayout.show(InnerCardPanel, "Main Screen");
+            }
+        });
+        accountBTN.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                innerCardLayout.show(InnerCardPanel, "Account");
             }
         });
     }

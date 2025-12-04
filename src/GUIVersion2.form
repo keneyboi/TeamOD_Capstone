@@ -581,12 +581,6 @@
                       <text value="GENERATE ID"/>
                     </properties>
                   </component>
-                  <hspacer id="d3081">
-                    <constraints>
-                      <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                      <gridbag weightx="0.0" weighty="0.0"/>
-                    </constraints>
-                  </hspacer>
                   <grid id="6fe2d" binding="containerQRPanel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                     <margin top="0" left="0" bottom="0" right="0"/>
                     <constraints>
@@ -621,6 +615,15 @@
                       <minimumSize width="80" height="50"/>
                       <preferredSize width="80" height="50"/>
                       <text value="CLEAR"/>
+                    </properties>
+                  </component>
+                  <component id="4aa26" class="javax.swing.JButton" binding="backButton2">
+                    <constraints>
+                      <grid row="0" column="3" row-span="2" col-span="1" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="10" left="10" bottom="50" right="10" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <text value="Back"/>
                     </properties>
                   </component>
                 </children>
@@ -698,7 +701,7 @@
                   </component>
                   <component id="aebda" class="javax.swing.JTextField" binding="eventGroupTF">
                     <constraints>
-                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="0" indent="0" use-parent-layout="false">
+                      <grid row="3" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="0" fill="0" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
                       </grid>
                       <gridbag top="10" left="10" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
@@ -711,7 +714,7 @@
                   </component>
                   <component id="7165e" class="javax.swing.JLabel">
                     <constraints>
-                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <grid row="1" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                       <gridbag top="15" left="15" bottom="0" right="15" weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
@@ -720,7 +723,7 @@
                   </component>
                   <component id="9b186" class="javax.swing.JLabel">
                     <constraints>
-                      <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <grid row="4" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                       <gridbag top="15" left="15" bottom="0" right="15" weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
@@ -729,7 +732,7 @@
                   </component>
                   <component id="420a7" class="javax.swing.JTextField" binding="eventNameTF">
                     <constraints>
-                      <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="0" indent="0" use-parent-layout="false">
+                      <grid row="5" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="0" fill="0" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
                       </grid>
                       <gridbag top="10" left="10" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
@@ -742,7 +745,7 @@
                   </component>
                   <component id="87aa" class="javax.swing.JTextField" binding="lateTImeTF">
                     <constraints>
-                      <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="0" indent="0" use-parent-layout="false">
+                      <grid row="7" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="0" fill="0" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
                       </grid>
                       <gridbag top="10" left="10" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
@@ -755,7 +758,7 @@
                   </component>
                   <component id="97d86" class="javax.swing.JLabel">
                     <constraints>
-                      <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <grid row="6" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                       <gridbag top="15" left="15" bottom="0" right="15" weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
@@ -764,56 +767,145 @@
                   </component>
                   <component id="3c01" class="javax.swing.JButton" binding="createEventButton" default-binding="true">
                     <constraints>
-                      <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <grid row="8" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                       <gridbag top="20" left="20" bottom="20" right="20" weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
                       <text value="Create Event"/>
                     </properties>
                   </component>
+                  <component id="eac1b" class="javax.swing.JComboBox" binding="eventGroupCB">
+                    <constraints>
+                      <grid row="2" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag top="10" left="10" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <model>
+                        <item value="Create Event Group"/>
+                      </model>
+                    </properties>
+                  </component>
+                  <component id="dd578" class="javax.swing.JButton" binding="backButton1" default-binding="true">
+                    <constraints>
+                      <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <text value="Back"/>
+                    </properties>
+                  </component>
                 </children>
               </grid>
-              <grid id="dfc74" binding="checkAttendancePane" layout-manager="GridBagLayout">
+              <grid id="dfc74" binding="eventDetailsPane" layout-manager="GridBagLayout">
                 <constraints>
-                  <card name="History"/>
+                  <card name="Event Details"/>
                 </constraints>
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="d2c83" class="javax.swing.JButton" binding="scanAttendanceButton" default-binding="true">
+                  <component id="d7f2a" class="javax.swing.JLabel">
                     <constraints>
-                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                       <gridbag top="10" left="10" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
-                      <text value="Scan Attendance"/>
+                      <text value="Group by:"/>
                     </properties>
                   </component>
-                  <component id="210bc" class="javax.swing.JButton" binding="stopButton" default-binding="true">
+                  <component id="caa47" class="javax.swing.JComboBox" binding="comboBox1" default-binding="true">
                     <constraints>
-                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag top="10" left="10" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <preferredSize width="100" height="42"/>
+                    </properties>
+                  </component>
+                  <component id="5eff" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="10" left="50" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <text value="Label"/>
+                    </properties>
+                  </component>
+                  <component id="69b3d" class="javax.swing.JComboBox" binding="comboBox2" default-binding="true">
+                    <constraints>
+                      <grid row="2" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag top="10" left="10" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <preferredSize width="100" height="42"/>
+                    </properties>
+                  </component>
+                  <component id="c0bbc" class="javax.swing.JButton" binding="backButton" default-binding="true">
+                    <constraints>
+                      <grid row="0" column="3" row-span="2" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag top="10" left="10" bottom="50" right="10" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <text value="Back"/>
+                    </properties>
+                  </component>
+                  <component id="81d4d" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="0" column="0" row-span="2" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag top="10" left="0" bottom="50" right="10" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <font name="Arial Rounded MT Bold" size="24" style="1"/>
+                      <horizontalAlignment value="2"/>
+                      <horizontalTextPosition value="0"/>
+                      <text value="Atendo"/>
+                    </properties>
+                  </component>
+                  <scrollpane id="178df">
+                    <constraints>
+                      <grid row="3" column="0" row-span="1" col-span="4" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                       <gridbag weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
-                      <text value="Stop"/>
+                      <preferredSize width="300" height="220"/>
+                      <verticalScrollBarPolicy value="22"/>
                     </properties>
-                  </component>
-                  <component id="5c28e" class="javax.swing.JComboBox" binding="eventSelectCB">
+                    <border type="none"/>
+                    <children/>
+                  </scrollpane>
+                  <component id="33e9" class="javax.swing.JLabel">
                     <constraints>
-                      <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                      <gridbag weightx="0.0" weighty="0.0"/>
+                      <grid row="1" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="0" left="0" bottom="3" right="0" weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
-                      <model/>
+                      <text value="Event Details"/>
                     </properties>
                   </component>
-                  <component id="8c159" class="javax.swing.JLabel">
+                  <component id="7ee2f" class="javax.swing.JButton" binding="seeAttendanceButton" default-binding="true">
                     <constraints>
-                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                      <gridbag weightx="0.0" weighty="0.0"/>
+                      <grid row="4" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag top="10" left="10" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
-                      <text value="Select event:"/>
+                      <text value="See Attendance"/>
+                    </properties>
+                  </component>
+                  <component id="b47ee" class="javax.swing.JButton" default-binding="true">
+                    <constraints>
+                      <grid row="4" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag top="10" left="10" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <text value="Delete"/>
+                    </properties>
+                  </component>
+                  <component id="994e7" class="javax.swing.JButton" default-binding="true">
+                    <constraints>
+                      <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag top="10" left="10" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <text value="Update"/>
                     </properties>
                   </component>
                 </children>
@@ -825,31 +917,68 @@
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="e75b4" class="javax.swing.JLabel">
+                  <component id="9701d" class="javax.swing.JButton" binding="showAccountBTN">
                     <constraints>
-                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                      <gridbag weightx="0.0" weighty="0.0"/>
+                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="50" left="20" bottom="20" right="20" weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
-                      <text value="ACCOUNT"/>
+                      <maximumSize width="100" height="100"/>
+                      <minimumSize width="100" height="100"/>
+                      <preferredSize width="100" height="100"/>
+                      <text value="Check Entry"/>
                     </properties>
                   </component>
-                  <component id="22b33" class="javax.swing.JButton" binding="logOutButton" default-binding="true">
+                  <component id="39085" class="javax.swing.JLabel">
                     <constraints>
-                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                      <gridbag top="20" left="20" bottom="20" right="20" weightx="0.0" weighty="0.0"/>
+                      <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="10" left="15" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
+                      <font name="Arial Rounded MT Bold" size="24" style="1"/>
+                      <text value="Event Creation"/>
+                    </properties>
+                  </component>
+                  <component id="41fa0" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="0" left="15" bottom="3" right="0" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <text value="Account"/>
+                    </properties>
+                  </component>
+                  <component id="26494" class="javax.swing.JButton">
+                    <constraints>
+                      <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="50" left="20" bottom="20" right="20" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <maximumSize width="100" height="100"/>
+                      <minimumSize width="100" height="100"/>
+                      <preferredSize width="100" height="100"/>
+                      <text value="Edit Account"/>
+                    </properties>
+                  </component>
+                  <component id="bf8b7" class="javax.swing.JButton">
+                    <constraints>
+                      <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="50" left="20" bottom="20" right="20" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <maximumSize width="100" height="100"/>
+                      <minimumSize width="100" height="100"/>
+                      <preferredSize width="100" height="100"/>
                       <text value="Log out"/>
                     </properties>
                   </component>
-                  <component id="9701d" class="javax.swing.JButton" binding="showAccountBTN">
+                  <component id="a738f" class="javax.swing.JButton" binding="backButton3" default-binding="true">
                     <constraints>
-                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                      <gridbag top="20" left="20" bottom="20" right="20" weightx="0.0" weighty="0.0"/>
+                      <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
-                      <text value="Show Account Details"/>
+                      <text value="Back"/>
                     </properties>
                   </component>
                 </children>
