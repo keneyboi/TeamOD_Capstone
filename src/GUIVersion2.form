@@ -622,7 +622,7 @@
                       <text value="Stop"/>
                     </properties>
                   </component>
-                  <component id="5c28e" class="javax.swing.JComboBox" binding="eventSelectionCB">
+                  <component id="5c28e" class="javax.swing.JComboBox" binding="eventSelectCB">
                     <constraints>
                       <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                       <gridbag weightx="0.0" weighty="0.0"/>
