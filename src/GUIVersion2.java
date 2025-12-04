@@ -84,6 +84,10 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     private List<Account> listOfAccounts = new ArrayList<>();
     private DefaultTableModel dm = new DefaultTableModel();
 
+    // added for event selection
+    private JComboBox<String> eventSelectionCB;
+    private Event selectedEvent;
+
     private Account currentAccount;
 
 
@@ -152,6 +156,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                             getEventGroupFolder();
                             assignEventFileToEventGroupDirectory();
                             showAccountDetails();
+                            addEventCB();
                         } catch (DefaultErrorException ex) {
                             JOptionPane.showMessageDialog(null, ex.getMessage());
                         }
@@ -285,18 +290,22 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                         JOptionPane.showMessageDialog(null, ex.getMessage());
                     }
                 }
+                addEventCB();
             }
         });
 
         scanAttendanceButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Event test1 = currentAccount.getListOfEventGroup().get(0).getListOfEvents().get(0);
+                if(selectedEvent == null) {
+                    JOptionPane.showMessageDialog(null, "Please select an event first!");
+                    return;
+                }
 
                 System.out.println("pressed");
                 openScanner(result->{
                     try {
-                        recordAttendance(test1, new Student(result[0], result[1], result[2], result[3], result[4]));
+                        recordAttendance(selectedEvent, new Student(result[0], result[1], result[2], result[3], result[4]));
                     } catch (DefaultErrorException ex) {
                         JOptionPane.showMessageDialog(null, "Unable to record attendance");
                     }
@@ -305,14 +314,50 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                 });
             }
         });
+
+        eventSelectionCB.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selected = (String) eventSelectionCB.getSelectedItem();
+                if(selected != null) {
+                    String[] parts = selected.split(" - ");
+                    String eventGroupName = parts[0];
+                    String eventName = parts[1];
+
+                    for(EventGroup eg : currentAccount.getListOfEventGroup()) {
+                        if(eg.getName().equals(eventGroupName)) {
+                            for(Event event : eg.getListOfEvents()) {
+                                if(event.getName().equals(eventName)) {
+                                    selectedEvent = event;
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
     }
 
     // accepts event and person, assigns person to event and adds them also to the csv
     public void recordAttendance(Event e, Person p) throws DefaultErrorException{
+
+        // check if student aleary exist
+        // joption will display that student aleary exist
+        for(Person s : e.getListOfAttendees()) {
+            if(s.getInfo().equals(p.getInfo())) {
+                //JOptionPane.showMessageDialog(null, "You already scanned your attendance!");
+                throw new DefaultErrorException("Student already exist!");
+            }
+        }
+
+        // instead of printing, successfully recording an attendance
+        // will be shown using joption
         try(PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(e.getPathName() + ".csv", true)))){
             pw.println(p.toString());
             System.out.println(p.toString());
             e.addAttendee(p);
+            JOptionPane.showMessageDialog(null, "Attendance recorded successfully!");
         } catch (IOException ex) {
             throw new DefaultErrorException("Unable to access file");
         }
@@ -356,7 +401,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         for(EventGroup eG : currentAccount.getListOfEventGroup()){
             System.out.println("Event Group: " + eG.getName());
             for(Event e : eG.getListOfEvents()){
-                System.out.println("----> Event: " + e.getName() + " Late time: " + e.getLateTime());
+                System.out.println("----> Event: " + e.getName() + " Late Time: " + e.getLateTime());
                 for(Person p : e.getListOfAttendees()){
                     System.out.println("---------> " + p.toString());
                 }
@@ -368,15 +413,22 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     // note! the first person in the peoples has the name of the late time.
     // this event is then added to its parameterized Event Group and also initialized it properly
     public Event getEventViaEventGroup(EventGroup eG, String eventName){
-        List<Person> personList = null;
+        List<?> list = null;
         System.out.println(eG.getPathName() + "/" + eventName);
         try{
-            personList = (List<Person>) CSVManager.getFromCSV(eG.getPathName() + "/" + eventName);
+            list = CSVManager.getFromCSV(eG.getPathName() + "/" + eventName);
         } catch (DefaultErrorException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
-        String lateTime = personList.get(0).getName();
-        personList.remove(0);
+
+        String lateTime = (String) list.get(0);
+        list.remove(0);
+
+        List<Person> personList = new ArrayList<>();
+        for(Object o : list){
+            personList.add((Person) o);
+        }
+
         Event event = new Event(eventName.replace(".csv", ""), eG, lateTime);
         event.setListOfAttendees(personList);
         return event;
@@ -399,7 +451,8 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     // creates an empty event and adds it to the desired folder
     public Event createEvent (String name, String lateTime, EventGroup eg) throws DefaultErrorException {
         try(BufferedWriter bw = new BufferedWriter(new FileWriter(eg.getPathName() + "/" + name + ".csv"))){
-            bw.write("Event\n" + lateTime + ",NULL,NULL,NULL,NULL\n");
+            bw.write("Event\n");
+            bw.write(lateTime + "\n");
         } catch (IOException e) {
             throw new DefaultErrorException("File can't be open");
         }
@@ -451,6 +504,15 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         }
         for(JButton b : EventButtons){
             b.addActionListener(this);
+        }
+    }
+
+    private void addEventCB() {
+        eventSelectionCB.removeAllItems();
+        for(EventGroup eg : currentAccount.getListOfEventGroup()) {
+            for(Event e : eg.getListOfEvents()) {
+                eventSelectionCB.addItem(eg.getName() + " - " + e.getName());
+            }
         }
     }
 
@@ -558,6 +620,17 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         if(createAccTF.getText().isEmpty()) throw new DefaultErrorException("Enter Valid Username!");
         if(!createEmailTF.getText().endsWith("@gmail.com")) throw new DefaultErrorException("Enter Valid Email!");
         if(Arrays.compare(createPassPF.getPassword(), createPassConfirmPW.getPassword()) != 0) throw new DefaultErrorException("Passwords don't match");
+
+        //check for duplicate username
+        for(Account a : listOfAccounts) {
+            if(a.getName().equals(createAccTF.getText())) {
+                throw new DefaultErrorException("Username already exists!");
+            }
+            if(a.getEmail().equals(createEmailTF.getText())) {
+                throw new DefaultErrorException("Email already registered!");
+            }
+        }
+
         listOfAccounts.add(new Account(createAccTF.getText(), createEmailTF.getText(), createPassPF.getPassword()));
         createAccTF.setText("");
         createEmailTF.setText("");

@@ -9,14 +9,14 @@ public class Filters {
 
     }
 
-    public static class FilterByYear implements Comparator<Person> {
+    public static class FilterByTime implements Comparator<Person> {
         @Override
         public int compare(Person p1, Person p2) {
             return p1.getTimeIn().compareTo(p2.getTimeIn());
         }
     }
 
-    public static class FilterByTime implements Comparator<Person> {
+    public static class FilterByYear implements Comparator<Person> {
         @Override
         public int compare(Person p1, Person p2) {
             if(p1 instanceof Student s1 && p2 instanceof Student s2){
