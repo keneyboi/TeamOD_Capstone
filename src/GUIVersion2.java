@@ -267,25 +267,49 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         createEventButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (eventGroupTF.getText().trim().isEmpty() || eventNameTF.getText().trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Please fill in both Event Group and Event Name!");
+                    return;
+                }
+
+                String targetGroupName = eventGroupTF.getText().trim();
+                String targetEventName = eventNameTF.getText().trim();
+
+                for (EventGroup eg : currentAccount.getListOfEventGroup()) {
+                    if (eg.getName().equalsIgnoreCase(targetGroupName)) {
+                        for (Event ev : eg.getListOfEvents()) {
+                            if (ev.getName().equalsIgnoreCase(targetEventName)) {
+                                JOptionPane.showMessageDialog(null, "Event already exists!");
+                                return;
+                            }
+                        }
+                    }
+                }
+
                 boolean created = false;
+
                 for(EventGroup eventGroup : currentAccount.getListOfEventGroup()){
-                    if(eventGroup.getName().equals(eventGroupTF.getText())){
+                    if(eventGroup.getName().equals(targetGroupName)){
                         try {
-                            eventGroup.addEvent(createEvent(eventNameTF.getText(), lateTImeTF.getText(), eventGroup));
+                            eventGroup.addEvent(createEvent(targetEventName, lateTImeTF.getText(), eventGroup));
+
                             getEventGroupFolder();
                             assignEventFileToEventGroupDirectory();
                             showAccountDetails();
                             created = true;
                         } catch (DefaultErrorException ex) {
                             JOptionPane.showMessageDialog(null, ex.getMessage());
+                            return;
                         }
                     }
                 }
+
                 if(!created){
                     try {
-                        EventGroup eg = createEventGroup(eventGroupTF.getText());
-                        currentAccount.addEventGroup(eg);
-                        eg.addEvent(createEvent(eventNameTF.getText(), lateTImeTF.getText(), eg));
+                        EventGroup eg = createEventGroup(targetGroupName);
+
+
+                        eg.addEvent(createEvent(targetEventName, lateTImeTF.getText(), eg));
                         getEventGroupFolder();
                         assignEventFileToEventGroupDirectory();
                         showAccountDetails();
@@ -295,8 +319,12 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                     }
                 }
 
-                if(created) JOptionPane.showMessageDialog(null, "Successfully Added an Event");
-                addEventCB();
+                if(created) {
+                    JOptionPane.showMessageDialog(null, "Successfully Added an Event");
+                    eventNameTF.setText("");
+                    lateTImeTF.setText("");
+                    addEventCB();
+                }
             }
         });
 
@@ -590,15 +618,21 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     private void addEventCB() {
 
         eventSelectCB.removeAllItems();
-        if(currentAccount.getListOfEventGroup().size() == 0) eventSelectCB.addItem("<No Events>");
-        else {
+        boolean hasEvents = false;
+        if (currentAccount != null && currentAccount.getListOfEventGroup() != null) {
             for (EventGroup eg : currentAccount.getListOfEventGroup()) {
-                for (Event e : eg.getListOfEvents()) {
-                    eventSelectCB.addItem(eg.getName() + " - " + e.getName());
+                if (eg.getListOfEvents() != null) {
+                    for (Event e : eg.getListOfEvents()) {
+                        eventSelectCB.addItem(eg.getName() + " - " + e.getName());
+                        hasEvents = true;
+                    }
                 }
             }
         }
 
+        if (!hasEvents) {
+            eventSelectCB.addItem("<No Events>");
+        }
     }
 
     public void clearTable(){
