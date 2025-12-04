@@ -286,10 +286,13 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                         getEventGroupFolder();
                         assignEventFileToEventGroupDirectory();
                         showAccountDetails();
+                        created = true;
                     } catch (DefaultErrorException ex) {
                         JOptionPane.showMessageDialog(null, ex.getMessage());
                     }
                 }
+
+                if(created) JOptionPane.showMessageDialog(null, "Successfully Added an Event");
                 addEventCB();
             }
         });
@@ -322,6 +325,10 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             public void actionPerformed(ActionEvent e) {
                 String selected = (String) eventSelectionCB.getSelectedItem();
                 if(selected != null) {
+                    if(selected.equals("<No Events>")){
+                        eventSelectionCB.setSelectedItem(null);
+                        return;
+                    }
                     String[] parts = selected.split(" - ");
                     String eventGroupName = parts[0];
                     String eventName = parts[1];
@@ -439,6 +446,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     // adds an event via name and automatically initializes it to the account
     // it also creates a Directory for it and throws an error if the event group already exists
     public EventGroup createEventGroup(String name) throws DefaultErrorException {
+        if (name.isEmpty() || (name.charAt(0) == ' ') || eventNameTF.getText().isEmpty()) throw new DefaultErrorException("Event Group ");
         File file = new File(currentAccount.getPathname() + "/" + name);
         if(file.exists()) throw new DefaultErrorException("Event Group already exists");
         file.mkdir();
@@ -510,12 +518,17 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     }
 
     private void addEventCB() {
+
         eventSelectionCB.removeAllItems();
-        for(EventGroup eg : currentAccount.getListOfEventGroup()) {
-            for(Event e : eg.getListOfEvents()) {
-                eventSelectionCB.addItem(eg.getName() + " - " + e.getName());
+        if(currentAccount.getListOfEventGroup().size() == 0) eventSelectionCB.addItem("<No Events>");
+        else {
+            for (EventGroup eg : currentAccount.getListOfEventGroup()) {
+                for (Event e : eg.getListOfEvents()) {
+                    eventSelectionCB.addItem(eg.getName() + " - " + e.getName());
+                }
             }
         }
+
     }
 
     public void clearTable(){
