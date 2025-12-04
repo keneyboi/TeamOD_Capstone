@@ -17,11 +17,13 @@ public class Account {
 
 
     public boolean login(String inputEmail, String inputPassword) {
+        if(inputEmail == null || inputPassword == null) return false;
         if (!this.email.equals(inputEmail)) return false;
         return Arrays.equals(this.password, inputPassword.toCharArray());
     }
 
     public void addEventGroup(EventGroup e) {
+
         listOfEventGroups.add(e);
     }
 

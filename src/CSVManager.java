@@ -40,12 +40,8 @@ public class CSVManager {
             String[] tokens;
 
             if (label != null && label.equals("Event")) {
-                String lTime = br.readLine(); // Read the 2nd line (LateTime)
-                if (lTime != null) {
-                    eventInfo.add(lTime); // Add time as String at Index 0
-                } else {
-                    eventInfo.add("No Late Time set"); // Default if missing
-                }
+                String lTime = br.readLine();
+                eventInfo.add(lTime != null? lTime : "No Late Time set");
             }
 
             while((line = br.readLine()) != null){
