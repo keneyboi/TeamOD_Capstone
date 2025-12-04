@@ -446,7 +446,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     // adds an event via name and automatically initializes it to the account
     // it also creates a Directory for it and throws an error if the event group already exists
     public EventGroup createEventGroup(String name) throws DefaultErrorException {
-        if (name.isEmpty() || (name.charAt(0) == ' ') || eventNameTF.getText().isEmpty()) throw new DefaultErrorException("Event Group ");
+        if (name.isEmpty() || (name.charAt(0) == ' ') || eventNameTF.getText().isEmpty()) throw new DefaultErrorException("Fields are empty!");
         File file = new File(currentAccount.getPathname() + "/" + name);
         if(file.exists()) throw new DefaultErrorException("Event Group already exists");
         file.mkdir();
@@ -632,25 +632,37 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     }
 
     public void createAccountCSV() throws DefaultErrorException, InvalidPasswordException {
-        if(createAccTF.getText().isEmpty()) throw new DefaultErrorException("Enter Valid Username!");
-        if(!createEmailTF.getText().endsWith("@gmail.com")) throw new DefaultErrorException("Enter Valid Email!");
-        if(Arrays.compare(createPassPF.getPassword(), createPassConfirmPW.getPassword()) != 0) throw new DefaultErrorException("Passwords don't match");
+        if (createAccTF.getText().trim().isEmpty()) {
+            throw new DefaultErrorException("Enter Valid Username!");
+        }
 
-        //check for duplicate username
-        for(Account a : listOfAccounts) {
-            if(a.getName().equals(createAccTF.getText())) {
+        String inputEmail = createEmailTF.getText().trim();
+        String emailLower = inputEmail.toLowerCase();
+
+        if (!emailLower.endsWith("@gmail.com") && !emailLower.endsWith("@yahoo.com") && !emailLower.endsWith("@cit.edu")) {
+            throw new DefaultErrorException("Enter a valid email domain!");
+        }
+
+        if (Arrays.compare(createPassPF.getPassword(), createPassConfirmPW.getPassword()) != 0) {
+            throw new DefaultErrorException("Passwords don't match");
+        }
+
+        for (Account a : listOfAccounts) {
+            if (a.getName().equalsIgnoreCase(createAccTF.getText().trim())) {
                 throw new DefaultErrorException("Username already exists!");
             }
-            if(a.getEmail().equals(createEmailTF.getText())) {
+            if (a.getEmail().equalsIgnoreCase(inputEmail)) {
                 throw new DefaultErrorException("Email already registered!");
             }
         }
 
-        listOfAccounts.add(new Account(createAccTF.getText(), createEmailTF.getText(), createPassPF.getPassword()));
+        listOfAccounts.add(new Account(createAccTF.getText().trim(), inputEmail, createPassPF.getPassword()));
+
         createAccTF.setText("");
         createEmailTF.setText("");
         createPassPF.setText("");
         createPassConfirmPW.setText("");
+
         JOptionPane.showMessageDialog(null, "Account successfully created! Please log in.");
         setSize(small);
         cardLayout.show(contentPanel, "LogIn");
@@ -663,9 +675,9 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             JOptionPane.showMessageDialog(null, ex.getMessage());
         }
 
-        for(Account a : listOfAccounts){
+        for (Account a : listOfAccounts) {
             File file = new File("out/Account/" + a.getName());
-            if (file != null && !file.exists()) {
+            if (!file.exists()) {
                 file.mkdirs();
             }
         }
