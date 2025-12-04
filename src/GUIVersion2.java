@@ -85,8 +85,8 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     private DefaultTableModel dm = new DefaultTableModel();
 
     // added for event selection
-    private JComboBox<String> eventSelectionCB;
-    private Event selectedEvent;
+    private JComboBox<String> eventSelectCB;
+    private Event eventSelected;
 
     private Account currentAccount;
 
@@ -300,7 +300,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         scanAttendanceButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(selectedEvent == null) {
+                if(eventSelected == null) {
                     JOptionPane.showMessageDialog(null, "Please select an event first!");
                     return;
                 }
@@ -310,7 +310,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                 System.out.println("pressed");
                 openScanner(result->{
                     try {
-                        recordAttendance(selectedEvent, new Student(result[0], result[1], result[2], result[3], result[4]));
+                        recordAttendance(eventSelected, new Student(result[0], result[1], result[2], result[3], result[4]));
                     } catch (DefaultErrorException ex) {
                         JOptionPane.showMessageDialog(null, "Unable to record attendance");
                     }
@@ -320,13 +320,13 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             }
         });
 
-        eventSelectionCB.addActionListener(new ActionListener() {
+        eventSelectCB.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String selected = (String) eventSelectionCB.getSelectedItem();
+                String selected = (String) eventSelectCB.getSelectedItem();
                 if(selected != null) {
                     if(selected.equals("<No Events>")){
-                        eventSelectionCB.setSelectedItem(null);
+                        eventSelectCB.setSelectedItem(null);
                         return;
                     }
                     String[] parts = selected.split(" - ");
@@ -337,7 +337,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                         if(eg.getName().equals(eventGroupName)) {
                             for(Event event : eg.getListOfEvents()) {
                                 if(event.getName().equals(eventName)) {
-                                    selectedEvent = event;
+                                    eventSelected = event;
                                     return;
                                 }
                             }
@@ -519,12 +519,12 @@ public class GUIVersion2 extends JFrame implements ActionListener {
 
     private void addEventCB() {
 
-        eventSelectionCB.removeAllItems();
-        if(currentAccount.getListOfEventGroup().size() == 0) eventSelectionCB.addItem("<No Events>");
+        eventSelectCB.removeAllItems();
+        if(currentAccount.getListOfEventGroup().size() == 0) eventSelectCB.addItem("<No Events>");
         else {
             for (EventGroup eg : currentAccount.getListOfEventGroup()) {
                 for (Event e : eg.getListOfEvents()) {
-                    eventSelectionCB.addItem(eg.getName() + " - " + e.getName());
+                    eventSelectCB.addItem(eg.getName() + " - " + e.getName());
                 }
             }
         }

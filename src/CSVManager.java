@@ -31,7 +31,7 @@ public class CSVManager {
 
     public static List<?> getFromCSV(String pathname) throws DefaultErrorException {
         List<Account> accounts = new ArrayList<>();
-        List<Object> eventData = new ArrayList<>();
+        List<Object> eventInfo = new ArrayList<>();
         String label = null;
 
         try(BufferedReader br = new BufferedReader(new FileReader(pathname))){
@@ -42,9 +42,9 @@ public class CSVManager {
             if (label != null && label.equals("Event")) {
                 String lTime = br.readLine(); // Read the 2nd line (LateTime)
                 if (lTime != null) {
-                    eventData.add(lTime); // Add time as String at Index 0
+                    eventInfo.add(lTime); // Add time as String at Index 0
                 } else {
-                    eventData.add("No Late Time set"); // Default if missing
+                    eventInfo.add("No Late Time set"); // Default if missing
                 }
             }
 
@@ -62,7 +62,7 @@ public class CSVManager {
                             continue;
                         }
                         tokens = line.split(",");
-                        eventData.add(new Student(tokens[0], tokens[1], tokens[2], tokens[3], tokens[4]));
+                        eventInfo.add(new Student(tokens[0], tokens[1], tokens[2], tokens[3], tokens[4]));
                         break;
                     default:
                         JOptionPane.showMessageDialog(null, "Invalid File");
@@ -80,7 +80,7 @@ public class CSVManager {
         if(label.equals("Account")){
             return accounts;
         } else {
-            return eventData;
+            return eventInfo;
         }
 
     }
