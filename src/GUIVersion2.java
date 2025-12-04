@@ -297,15 +297,12 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         scanAttendanceButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-<<<<<<< HEAD
                 if(selectedEvent == null) {
                     JOptionPane.showMessageDialog(null, "Please select an event first!");
                     return;
                 }
-=======
                 // dynamic using for loop
                 Event test1 = currentAccount.getListOfEventGroup().get(0).getListOfEvents().get(0);
->>>>>>> 70e285d90642f8eade8e4e2d971e1b8b7841f484
 
                 System.out.println("pressed");
                 openScanner(result->{
