@@ -46,6 +46,8 @@ public class Encryption {
         return new String(encrypted);
     }
 
+
+
     public static String decrypt(String s){
         int count = 0;
         int decryptSize = s.length();

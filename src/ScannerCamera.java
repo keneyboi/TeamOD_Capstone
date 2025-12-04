@@ -55,6 +55,7 @@ public class ScannerCamera {
                 System.out.println("End Button Pressed");
                 frame.setVisible(false);
                 thread.interrupt();
+                wp.stop();
                 webcam.close();
                 GUIVersion2.recordAttendanceAdapter(listStudents);
             }
@@ -72,15 +73,16 @@ public class ScannerCamera {
         frame.setVisible(true);
         thread = new Thread(()->{
 
-            while (true){
+            while (!Thread.currentThread().isInterrupted()){
                 try{
                     frame.repaint();
+                    if(!frame.isVisible() || !webcam.isOpen()){
+                        System.out.println("Stopping thread");
+                        break;
+                    }
                     BufferedImage image = webcam.getImage();
                     if(image == null) continue;
-                    if(!frame.isVisible()){
-                        webcam.close();
-                        return;
-                    }
+
                     LuminanceSource source = new BufferedImageLuminanceSource(image);
                     BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
                     Result result = new MultiFormatReader().decode(bitmap);
@@ -88,10 +90,15 @@ public class ScannerCamera {
                     String res = Encryption.decrypt(result.getText());
                     String[] toAdd = res.split(",");
                     Student p = new Student(toAdd[0], toAdd[1], toAdd[2], toAdd[3], toAdd[4]);
+
                     boolean flag = false;
                     for(Student s : listStudents){
-                        if(s.getID().equals(p.getID()) && s.getName().equals(p.getName())) flag = true;
+                        if(s.getID().equals(p.getID())){
+                            flag = true;
+                            break;
+                        }
                     }
+
                     if(!flag){
                         listStudents.add(p);
                         System.out.println("Added: " + p.toString());
@@ -116,9 +123,4 @@ public class ScannerCamera {
     }
     public boolean isOpen(){ return isOpen; }
 
-    public static void main(String[] args) {
-        ScannerCamera cam = new ScannerCamera();
-        cam.open();
-
-    }
 }
