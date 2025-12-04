@@ -259,7 +259,7 @@
                   </component>
                   <component id="7bc77" class="javax.swing.JLabel">
                     <constraints>
-                      <grid row="6" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <grid row="7" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                       <gridbag top="0" left="10" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
@@ -268,9 +268,9 @@
                       <text value="Scan Attendance"/>
                     </properties>
                   </component>
-                  <component id="dbbf" class="javax.swing.JButton" binding="addNewBTN">
+                  <component id="dbbf" class="javax.swing.JButton" binding="addNewStudentBTN">
                     <constraints>
-                      <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                      <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                       <gridbag top="10" left="10" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
@@ -280,9 +280,9 @@
                       <text value="ADD-LOGO"/>
                     </properties>
                   </component>
-                  <component id="42190" class="javax.swing.JButton" binding="attendeesBTN">
+                  <component id="42190" class="javax.swing.JButton" binding="newEventBTN">
                     <constraints>
-                      <grid row="7" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                      <grid row="8" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                       <gridbag top="10" left="10" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
@@ -294,29 +294,29 @@
                   </component>
                   <component id="69663" class="javax.swing.JLabel">
                     <constraints>
-                      <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <grid row="9" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                       <gridbag top="0" left="10" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
                       <horizontalAlignment value="0"/>
                       <horizontalTextPosition value="0"/>
-                      <text value="Add New"/>
+                      <text value="New Student"/>
                     </properties>
                   </component>
                   <component id="ea871" class="javax.swing.JLabel">
                     <constraints>
-                      <grid row="8" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <grid row="9" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                       <gridbag top="0" left="10" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
                       <horizontalAlignment value="0"/>
                       <horizontalTextPosition value="0"/>
-                      <text value="Attendees"/>
+                      <text value="New Event"/>
                     </properties>
                   </component>
-                  <component id="30d39" class="javax.swing.JButton" binding="changeEventBTN">
+                  <component id="30d39" class="javax.swing.JButton" binding="eventDetailsBTN">
                     <constraints>
-                      <grid row="7" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                      <grid row="8" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                       <gridbag top="10" left="10" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
@@ -328,18 +328,18 @@
                   </component>
                   <component id="cc6ec" class="javax.swing.JLabel">
                     <constraints>
-                      <grid row="8" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <grid row="9" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                       <gridbag top="0" left="10" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
                       <horizontalAlignment value="0"/>
                       <horizontalTextPosition value="0"/>
-                      <text value="Change Event"/>
+                      <text value="Event Details"/>
                     </properties>
                   </component>
                   <component id="ea09e" class="javax.swing.JButton" binding="accountBTN">
                     <constraints>
-                      <grid row="7" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                      <grid row="8" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                       <gridbag top="10" left="10" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
@@ -351,7 +351,7 @@
                   </component>
                   <component id="84095" class="javax.swing.JLabel">
                     <constraints>
-                      <grid row="8" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <grid row="9" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                       <gridbag top="0" left="10" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
@@ -360,9 +360,9 @@
                       <text value="Account"/>
                     </properties>
                   </component>
-                  <component id="6145e" class="javax.swing.JComboBox" default-binding="true">
+                  <component id="6145e" class="javax.swing.JComboBox" binding="mainGroupCB">
                     <constraints>
-                      <grid row="3" column="2" row-span="1" col-span="2" vsize-policy="0" hsize-policy="2" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                      <grid row="4" column="2" row-span="1" col-span="2" vsize-policy="0" hsize-policy="2" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                       <gridbag top="10" left="10" bottom="0" right="0" weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
@@ -373,7 +373,7 @@
                   </component>
                   <component id="cb215" class="javax.swing.JLabel">
                     <constraints>
-                      <grid row="4" column="2" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <grid row="5" column="2" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                       <gridbag top="10" left="10" bottom="0" right="0" weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
@@ -384,7 +384,7 @@
                   </component>
                   <component id="e3972" class="javax.swing.JLabel">
                     <constraints>
-                      <grid row="2" column="2" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <grid row="3" column="2" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                       <gridbag top="10" left="10" bottom="0" right="0" weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
@@ -393,9 +393,9 @@
                       <text value="GROUP:"/>
                     </properties>
                   </component>
-                  <component id="fe56b" class="javax.swing.JComboBox" binding="comboBox1" default-binding="true">
+                  <component id="fe56b" class="javax.swing.JComboBox" binding="mainEventCB">
                     <constraints>
-                      <grid row="5" column="2" row-span="1" col-span="2" vsize-policy="0" hsize-policy="2" anchor="1" fill="0" indent="0" use-parent-layout="false"/>
+                      <grid row="6" column="2" row-span="1" col-span="2" vsize-policy="0" hsize-policy="2" anchor="1" fill="0" indent="0" use-parent-layout="false"/>
                       <gridbag top="10" left="10" bottom="0" right="0" weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
@@ -406,7 +406,7 @@
                   </component>
                   <component id="611f7" class="javax.swing.JButton" binding="scanLogoHereButton" default-binding="true">
                     <constraints>
-                      <grid row="1" column="0" row-span="5" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                      <grid row="2" column="0" row-span="5" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                       <gridbag top="10" left="10" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
@@ -417,10 +417,19 @@
                   </component>
                   <vspacer id="5afb1">
                     <constraints>
-                      <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                      <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
                       <gridbag top="20" left="0" bottom="0" right="0" weightx="0.0" weighty="0.0"/>
                     </constraints>
                   </vspacer>
+                  <component id="2344f" class="javax.swing.JLabel" binding="usernameLabel">
+                    <constraints>
+                      <grid row="1" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="0" left="11" bottom="3" right="0" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <text value="Username Here"/>
+                    </properties>
+                  </component>
                 </children>
               </grid>
               <grid id="89e90" binding="createIDPane" layout-manager="GridBagLayout">
@@ -865,7 +874,7 @@
               </grid>
             </children>
           </grid>
-          <grid id="6b655" layout-manager="GridBagLayout">
+          <grid id="6b655" binding="TopBorderPanel" layout-manager="GridBagLayout">
             <constraints border-constraint="North"/>
             <properties>
               <background color="-9561338"/>

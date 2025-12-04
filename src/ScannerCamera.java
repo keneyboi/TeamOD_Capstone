@@ -19,26 +19,24 @@ import java.util.List;
 import java.util.Objects;
 
 public class ScannerCamera {
+    GUIVersion2 gui;
     Webcam webcam;
     JFrame frame;
     JPanel webPanel;
     JButton endAttendance;
-    List<Student> listStudents = new ArrayList<>();
+    static List<Student> listStudents = new ArrayList<>();
     Thread thread;
     boolean isOpen = false;
     boolean flag = false;
 
-
     public ScannerCamera(){
-
         listStudents.add(new Student("Attendance Start: ", Instant.now() + "", "", "", ""));
-
+        endAttendance = new JButton("End Attendance");
         Webcam.setDriver(new NativeDriver());
         webcam = Webcam.getDefault();
         if (webcam == null) {
             System.out.println("No webcam detected!");
             return;
-
         }
         webcam.setViewSize(WebcamResolution.VGA.getSize());
 
@@ -48,26 +46,31 @@ public class ScannerCamera {
         wp.setFPSDisplayed(true);
         frame.setSize(webcam.getViewSize());
         frame.add(wp, BorderLayout.CENTER);
-        webcam.close();
         endAttendance = new JButton("End Attendance");
         endAttendance.setPreferredSize(new Dimension(200, 50));
         frame.add(endAttendance, BorderLayout.SOUTH);
         endAttendance.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                close();
+                System.out.println("End Button Pressed");
+                frame.setVisible(false);
+                thread.interrupt();
+                webcam.close();
+                GUIVersion2.recordAttendanceAdapter(listStudents);
             }
         });
-
     }
 
-
+    public static List<Student> getListStudents(){
+        return listStudents;
+    }
 
     public void open() {
+        listStudents.clear();
         isOpen = true;
         webcam.open();
+        frame.setVisible(true);
         thread = new Thread(()->{
-            frame.setVisible(true);
 
             while (true){
                 try{
@@ -95,11 +98,7 @@ public class ScannerCamera {
                         SoundPlayer.playSound("assets/beep.wav");
                     }
                 } catch (NotFoundException e) {
-                    try {
-                        thread.sleep(100);
-                    } catch (InterruptedException ex) {
-                        System.out.println("Interrupted exception was called");
-                    }
+
                 }
             }
         });
@@ -108,10 +107,7 @@ public class ScannerCamera {
     }
 
     public List<Student> close(){
-        webcam.close();
-        frame.dispose();
-        thread.interrupt();
-        isOpen = false;
+
         return listStudents;
     }
 
@@ -120,4 +116,9 @@ public class ScannerCamera {
     }
     public boolean isOpen(){ return isOpen; }
 
+    public static void main(String[] args) {
+        ScannerCamera cam = new ScannerCamera();
+        cam.open();
+
+    }
 }

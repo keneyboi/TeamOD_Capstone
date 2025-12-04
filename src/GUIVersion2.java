@@ -79,16 +79,21 @@ public class GUIVersion2 extends JFrame implements ActionListener {
 
     // added for event selection
     private JComboBox<String> eventSelectCB;
-    private JComboBox comboBox1;
+    private JComboBox mainEventCB;
     private JButton scanLogoHereButton;
-    private JButton addNewBTN;
-    private JButton attendeesBTN;
-    private JButton changeEventBTN;
+    private JButton addNewStudentBTN;
+    private JButton newEventBTN;
+    private JButton eventDetailsBTN;
     private JButton accountBTN;
-    private Event eventSelected;
+    private JComboBox mainGroupCB;
+    private JPanel TopBorderPanel;
+    private JLabel usernameLabel;
 
+    // selected data segments
     private Account currentAccount;
-
+    private static Event eventSelected;
+    private EventGroup eventGroupSelected;
+    private static List<Student> resultListStudent;
 
     CardLayout innerCardLayout = (CardLayout)InnerCardPanel.getLayout();
     CardLayout cardLayout = (CardLayout)contentPanel.getLayout();
@@ -104,6 +109,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         mainScreenBT.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                innerCardLayout.show(InnerCardPanel, e.getActionCommand());
                 if(getHeight() < 530 && !addEventBT.isVisible()) setSize(getWidth(), 530);
                 for(JButton b : IDButtons){
                     if(!b.isVisible()) b.setVisible(true);
@@ -156,6 +162,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                             assignEventFileToEventGroupDirectory();
                             showAccountDetails();
                             addEventCB();
+                            updateDataSegments();
                         } catch (DefaultErrorException ex) {
                             JOptionPane.showMessageDialog(null, ex.getMessage());
                         }
@@ -346,10 +353,76 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                 }
             }
         });
+        mainGroupCB.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selected = (String)mainGroupCB.getSelectedItem();
+                eventSelected = null;
+                for(EventGroup eV : currentAccount.getListOfEventGroup()){
+                    if(eV.getName().equals(selected)){
+                        eventGroupSelected = eV;
+                        mainEventCB.removeAllItems();
+                        mainEventCB.addItem("Choose Event");
+                        for(Event aV : eV.getListOfEvents()){
+                            mainEventCB.addItem(aV.getName());
+                        }
+                        return;
+                    }
+                }
+            }
+        });
+        mainEventCB.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selected = (String)mainEventCB.getSelectedItem();
+                if(eventGroupSelected != null){
+                    for(Event eA : eventGroupSelected.getListOfEvents()){
+                        if(eA.getName().equals(selected)){
+                            eventSelected = eA;
+                            return;
+                        }
+                    }
+                }
+            }
+        });
+        scanLogoHereButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                List<Student> result = null;
+                Student startAttendance;
+                if(eventSelected != null && eventGroupSelected != null){
+                    System.out.println("Selected: " + eventGroupSelected.getName() + " -> " + eventSelected.getName());
+                    camera = new ScannerCamera();
+                    camera.open();
+                }
+            }
+        });
+        addNewStudentBTN.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                innerCardLayout.show(InnerCardPanel, "Create ID");
+            }
+        });
+    }
+
+    // this function is called after log in, when the current user is initialized.
+    // it aims to initialize or update all of the UI when something is added.
+    public void updateDataSegments(){
+        if(!currentAccount.getListOfEventGroup().isEmpty()){
+            mainGroupCB.addItem("Choose Event Group");
+            for(EventGroup e : currentAccount.getListOfEventGroup()){
+                mainGroupCB.addItem(e.getName());
+            }
+        } else {
+            mainGroupCB.addItem("<None>");
+        }
+        mainEventCB.addItem("Choose Event");
+
+        usernameLabel.setText("Welcome " + currentAccount.getName() + "!");
     }
 
     // accepts event and person, assigns person to event and adds them also to the csv
-    public void recordAttendance(Event e, Person p) throws DefaultErrorException{
+    public static void recordAttendance(Event e, Person p) throws DefaultErrorException{
 
         // check if student aleary exist
         // joption will display that student aleary exist
@@ -366,7 +439,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             pw.println(p.toString());
             System.out.println(p.toString());
             e.addAttendee(p);
-            JOptionPane.showMessageDialog(null, "Attendance recorded successfully!");
+            System.out.println("Adding: " + p.getName() + " -> " + e.getName());
         } catch (IOException ex) {
             throw new DefaultErrorException("Unable to access file");
         }
@@ -483,9 +556,6 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         updateAccountFolder();
         setTable();
 
-        for(Account a : listOfAccounts){
-            System.out.println(a);
-        }
 
         setSize(small);
         ImageIcon logo = new ImageIcon("assets/test.png");
@@ -759,6 +829,17 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             clip.start();
         } catch (IOException | LineUnavailableException | UnsupportedAudioFileException var3) {
             System.out.println("Unable to play sound");
+        }
+
+    }
+
+    public static void recordAttendanceAdapter(List<Student> s){
+        for(Student s2 : s){
+            try {
+                recordAttendance(eventSelected, s2);
+            } catch (DefaultErrorException e) {
+                System.out.println("Student Already Logged Attendance");
+            }
         }
 
     }
