@@ -8,7 +8,7 @@ public class ListRowItem extends JPanel {
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
-        setMaximumSize(new Dimension(Integer.MAX_VALUE, 80));
+        setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
         setBackground(UIManager.getColor("Panel.background"));
 
 
