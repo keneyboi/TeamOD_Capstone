@@ -87,7 +87,6 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     private JPanel TopBorderPanel;
     private JLabel usernameLabel;
     private JComboBox eventGroupCB;
-    private JComboBox comboBox1;
     private JComboBox comboBox2;
     private JButton backButton;
     private JButton backButton2;
@@ -98,6 +97,13 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     private JTable AccountDtTable;
     private JScrollPane AccountDtPane;
     private JLabel accountLbl;
+
+    // event details pane
+    private JScrollPane eventDetailsScrollPane;
+    private JComboBox eventDetailsCB;
+    private JPanel listContainerPanel;
+    private Event currentSelectedEvent = null;
+    private JPanel currentSelectedRow = null;
 
     // selected data segments
     private Account currentAccount;
@@ -448,7 +454,18 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 innerCardLayout.show(InnerCardPanel, "Main Screen");
+
+                listContainerPanel.removeAll();
+                currentSelectedEvent = null;
+                currentSelectedRow = null;
+
+                if (eventDetailsCB.getItemCount() > 0) {
+                    eventDetailsCB.setSelectedIndex(0);
+                }
+
+                refreshListUI();
             }
+
         });
         backButton2.addComponentListener(new ComponentAdapter() {
         });
@@ -494,6 +511,37 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                 setLocationRelativeTo(null);
             }
         });
+
+        eventDetailsCB.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedGroupName = (String) eventDetailsCB.getSelectedItem();
+                if (selectedGroupName == null || selectedGroupName.equals("Choose Event Group")) return;
+
+                // Find the group object
+                for(EventGroup eg : currentAccount.getListOfEventGroup()){
+                    if(eg.getName().equals(selectedGroupName)){
+                        // Load this group's events into the list
+                        loadEventsList(eg.getListOfEvents());
+                        return;
+                    }
+                }
+            }
+        });
+
+// 3. Add Listener for "See Attendance" Button
+        seeAttendanceButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (currentSelectedEvent == null) {
+                    JOptionPane.showMessageDialog(null, "Please select an Event first!");
+                    return;
+                }
+                // Load the attendees of the selected event
+                loadStudentList(currentSelectedEvent.getListOfAttendees());
+            }
+        });
+
     }
 
     // this function is called after log in, when the current user is initialized.
@@ -504,6 +552,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         mainGroupCB.removeAllItems();
         mainEventCB.removeAllItems();
         eventGroupCB.removeAllItems();
+        eventDetailsCB.removeAllItems();
 
         eventGroupCB.addItem("Create Event Group");
 
@@ -524,6 +573,14 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         if (usernameLabel != null && currentAccount != null) {
             usernameLabel.setText("Welcome " + currentAccount.getName() + "!");
             accountLbl.setText("Hello " + currentAccount.getName() + "!");
+        }
+
+        eventDetailsCB.addItem("Choose Event Group");
+
+        if (currentAccount != null && currentAccount.getListOfEventGroup() != null && !currentAccount.getListOfEventGroup().isEmpty()) {
+            for (EventGroup e : currentAccount.getListOfEventGroup()) {
+                eventDetailsCB.addItem(e.getName());
+            }
         }
         setAccountTable();
     }
@@ -663,6 +720,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         updateAccountFolder();
         setTable();
         setAccountTable();
+        initScrollContainer();
 
 
         setSize(small);
@@ -992,5 +1050,97 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     private void createUIComponents() {
         // TODO: place custom component creation code here
 
+    }
+
+    // methods for the event details pane
+    private void initScrollContainer() {
+        listContainerPanel = new JPanel();
+        // BoxLayout.Y_AXIS makes items stack vertically
+        listContainerPanel.setLayout(new BoxLayout(listContainerPanel, BoxLayout.Y_AXIS));
+
+        // Bind the container to the scroll pane
+        if (eventDetailsScrollPane != null) {
+            eventDetailsScrollPane.setViewportView(listContainerPanel);
+        } else {
+            System.out.println("eventDetailsScrollPane is not initialized.");
+        }
+    }
+
+    // for event(jpanel) lists
+    private void loadEventsList(List<Event> events) {
+        listContainerPanel.removeAll();
+        currentSelectedEvent = null;
+        currentSelectedRow = null;
+
+        if (events == null || events.isEmpty()) {
+            listContainerPanel.add(new JLabel("No events found in this group."));
+        } else {
+            for (Event e : events) {
+                ListRowItem item = new ListRowItem(e.getName(), "Late Time: " + e.getLateTime(), true);
+
+                // highlight the jpanel when clicked
+                MouseAdapter select = new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent me) {
+                        selectRow(item, e);
+                    }
+                };
+
+                item.addMouseListener(select);
+                // Add listener to the components inside so clicking them also selects the row
+                for(Component c : item.getComponents()) {
+                    c.addMouseListener(select);
+                }
+
+                listContainerPanel.add(item);
+                // Add a tiny invisible gap between rows
+                listContainerPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+            }
+        }
+
+        refreshListUI();
+    }
+
+    // for student(jpanel) list
+    private void loadStudentList(List<Person> attendees) {
+        listContainerPanel.removeAll();
+
+        if (attendees == null || attendees.isEmpty()) {
+            listContainerPanel.add(new JLabel("No attendance records found."));
+        } else {
+            for (Person p : attendees) {
+                String subText = p.getInfo();
+                if(p instanceof Student s) {
+                    subText = s.getID() + " | " + s.getSection() + " | " + s.getTimeIn();
+                }
+
+                // passes false to the isSelectable so it cannot be selected (might change later)
+                ListRowItem row = new ListRowItem(p.getName(), subText, false);
+                listContainerPanel.add(row);
+                listContainerPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+            }
+        }
+
+        refreshListUI();
+    }
+
+    // highlight logic
+    private void selectRow(JPanel row, Event e) {
+        if (currentSelectedRow != null) {
+            currentSelectedRow.setBackground(UIManager.getColor("Panel.background"));
+            currentSelectedRow.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        }
+
+        currentSelectedRow = row;
+        currentSelectedRow.setBackground(new Color(173, 216, 230)); // Light Blue
+        currentSelectedRow.setBorder(BorderFactory.createLineBorder(Color.BLUE, 2));
+
+        currentSelectedEvent = e;
+        System.out.println("Selected: " + e.getName());
+    }
+
+    private void refreshListUI() {
+        listContainerPanel.revalidate();
+        listContainerPanel.repaint();
     }
 }
