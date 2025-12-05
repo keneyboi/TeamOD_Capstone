@@ -95,6 +95,9 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     private JButton seeAttendanceButton;
     private JButton backButton3;
     private JButton LogOut;
+    private JTable AccountDtTable;
+    private JScrollPane AccountDtPane;
+    private JLabel accountLbl;
 
     // selected data segments
     private Account currentAccount;
@@ -252,6 +255,26 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             }
         });
 
+        eventGroupCB.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selected = (String) eventGroupCB.getSelectedItem();
+                if (selected == null) return;
+                if (selected.equals("Create Event Group")) {
+                    eventGroupTF.setVisible(true);
+                    eventGroupTF.setText("");
+                } else {
+                    eventGroupTF.setVisible(false);
+                    eventGroupTF.setText(selected);
+                }
+
+                if (addEventPane != null) {
+                    addEventPane.revalidate();
+                    addEventPane.repaint();
+                }
+            }
+        });
+
         showAccountBTN.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -270,12 +293,25 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         createEventButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (eventGroupTF.getText().trim().isEmpty() || eventNameTF.getText().trim().isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Please fill in both Event Group and Event Name!");
+
+                String selectedOption = (String) eventGroupCB.getSelectedItem();
+                String targetGroupName = "";
+
+                if (selectedOption != null && selectedOption.equals("Create Event Group")) {
+                    if (eventGroupTF.getText().trim().isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "Please enter a name for the new Event Group!");
+                        return;
+                    }
+                    targetGroupName = eventGroupTF.getText().trim();
+                } else {
+                    targetGroupName = selectedOption;
+                }
+
+                if (eventNameTF.getText().trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Please enter an Event Name!");
                     return;
                 }
 
-                String targetGroupName = eventGroupTF.getText().trim();
                 String targetEventName = eventNameTF.getText().trim();
 
                 for (EventGroup eg : currentAccount.getListOfEventGroup()) {
@@ -291,15 +327,12 @@ public class GUIVersion2 extends JFrame implements ActionListener {
 
                 boolean created = false;
 
-                for(EventGroup eventGroup : currentAccount.getListOfEventGroup()){
-                    if(eventGroup.getName().equals(targetGroupName)){
+                for (EventGroup eventGroup : currentAccount.getListOfEventGroup()) {
+                    if (eventGroup.getName().equals(targetGroupName)) {
                         try {
                             eventGroup.addEvent(createEvent(targetEventName, lateTImeTF.getText(), eventGroup));
-
-                            getEventGroupFolder();
-                            assignEventFileToEventGroupDirectory();
-                            showAccountDetails();
                             created = true;
+                            break;
                         } catch (DefaultErrorException ex) {
                             JOptionPane.showMessageDialog(null, ex.getMessage());
                             return;
@@ -307,25 +340,31 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                     }
                 }
 
-                if(!created){
+                if (!created) {
                     try {
                         EventGroup eg = createEventGroup(targetGroupName);
-
-
                         eg.addEvent(createEvent(targetEventName, lateTImeTF.getText(), eg));
-                        getEventGroupFolder();
-                        assignEventFileToEventGroupDirectory();
-                        showAccountDetails();
                         created = true;
                     } catch (DefaultErrorException ex) {
                         JOptionPane.showMessageDialog(null, ex.getMessage());
                     }
                 }
 
-                if(created) {
-                    JOptionPane.showMessageDialog(null, "Successfully Added an Event");
-                    eventNameTF.setText("");
-                    lateTImeTF.setText("");
+                if (created) {
+                    try {
+                        getEventGroupFolder();
+                        assignEventFileToEventGroupDirectory();
+                        showAccountDetails();
+
+                        // Update UI
+                        updateDataSegments();
+                        JOptionPane.showMessageDialog(null, "Successfully Added an Event");
+                        eventNameTF.setText("");
+                        lateTImeTF.setText("");
+
+                    } catch (DefaultErrorException ex) {
+                        JOptionPane.showMessageDialog(null, "Error refreshing data: " + ex.getMessage());
+                    }
                 }
             }
         });
@@ -440,6 +479,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         accountBTN.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                setAccountTable();
                 innerCardLayout.show(InnerCardPanel, "Account");
             }
         });
@@ -458,21 +498,34 @@ public class GUIVersion2 extends JFrame implements ActionListener {
 
     // this function is called after log in, when the current user is initialized.
     // it aims to initialize or update all of the UI when something is added.
-    public void updateDataSegments(){
+    public void updateDataSegments() {
+        if (mainGroupCB == null || mainEventCB == null || eventGroupCB == null) return;
+
         mainGroupCB.removeAllItems();
         mainEventCB.removeAllItems();
+        eventGroupCB.removeAllItems();
 
-        if(currentAccount.getListOfEventGroup() != null && !currentAccount.getListOfEventGroup().isEmpty()){
+        eventGroupCB.addItem("Create Event Group");
+
+        if (currentAccount != null && currentAccount.getListOfEventGroup() != null && !currentAccount.getListOfEventGroup().isEmpty()) {
+
             mainGroupCB.addItem("Choose Event Group");
-            for(EventGroup e : currentAccount.getListOfEventGroup()){
+
+            for (EventGroup e : currentAccount.getListOfEventGroup()) {
                 mainGroupCB.addItem(e.getName());
+                eventGroupCB.addItem(e.getName());
             }
         } else {
             mainGroupCB.addItem("<None>");
         }
 
         mainEventCB.addItem("Choose Event");
-        usernameLabel.setText("Welcome " + currentAccount.getName() + "!");
+
+        if (usernameLabel != null && currentAccount != null) {
+            usernameLabel.setText("Welcome " + currentAccount.getName() + "!");
+            accountLbl.setText("Hello " + currentAccount.getName() + "!");
+        }
+        setAccountTable();
     }
 
     // accepts event and person, assigns person to event and adds them also to the csv
@@ -609,6 +662,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         }
         updateAccountFolder();
         setTable();
+        setAccountTable();
 
 
         setSize(small);
@@ -674,6 +728,33 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         scanScrollPane.repaint();
         scanScrollPane.revalidate();
     }
+
+    public void setAccountTable() {
+        if (AccountDtTable == null) return;
+        int totalEventGroups = 0;
+        int totalEvents = 0;
+
+        if (currentAccount != null && currentAccount.getListOfEventGroup() != null) {
+            totalEventGroups = currentAccount.getListOfEventGroup().size();
+            for (EventGroup eg : currentAccount.getListOfEventGroup()) {
+                if (eg.getListOfEvents() != null) {
+                    totalEvents += eg.getListOfEvents().size();
+                }
+            }
+        }
+
+        DefaultTableModel model = new DefaultTableModel();
+        model.addColumn("Category");
+        model.addColumn("Count");
+        model.addRow(new Object[]{"Event Groups", totalEventGroups});
+        model.addRow(new Object[]{"Total Events", totalEvents});
+
+        AccountDtTable.setModel(model);
+        AccountDtTable.setPreferredScrollableViewportSize(new Dimension(320, 100));
+        AccountDtTable.setFillsViewportHeight(true);
+        AccountDtTable.setRowHeight(25);
+    }
+
 
     /* public void openScanner(Consumer<String[]> callback){
         new Thread(()->{
@@ -884,15 +965,10 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     }
 
     public void initializeFiles() throws DefaultErrorException {
-
         eventSelected = null;
         eventGroupSelected = null;
-
-
         getEventGroupFolder();
         assignEventFileToEventGroupDirectory();
-
-
         showAccountDetails();
         updateDataSegments(); // This now clears and reloads the main CBs
     }
@@ -915,5 +991,6 @@ public class GUIVersion2 extends JFrame implements ActionListener {
 
     private void createUIComponents() {
         // TODO: place custom component creation code here
+
     }
 }

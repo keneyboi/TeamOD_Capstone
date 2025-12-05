@@ -940,18 +940,6 @@
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="9701d" class="javax.swing.JButton" binding="showAccountBTN">
-                    <constraints>
-                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-                      <gridbag top="50" left="20" bottom="20" right="20" weightx="0.0" weighty="0.0"/>
-                    </constraints>
-                    <properties>
-                      <maximumSize width="100" height="100"/>
-                      <minimumSize width="100" height="100"/>
-                      <preferredSize width="100" height="100"/>
-                      <text value="Check Entry"/>
-                    </properties>
-                  </component>
                   <component id="39085" class="javax.swing.JLabel">
                     <constraints>
                       <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
@@ -962,37 +950,13 @@
                       <text value="Account Details"/>
                     </properties>
                   </component>
-                  <component id="41fa0" class="javax.swing.JLabel">
+                  <component id="41fa0" class="javax.swing.JLabel" binding="accountLbl">
                     <constraints>
                       <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                       <gridbag top="0" left="15" bottom="3" right="0" weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
                       <text value="Account"/>
-                    </properties>
-                  </component>
-                  <component id="26494" class="javax.swing.JButton">
-                    <constraints>
-                      <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-                      <gridbag top="50" left="20" bottom="20" right="20" weightx="0.0" weighty="0.0"/>
-                    </constraints>
-                    <properties>
-                      <maximumSize width="100" height="100"/>
-                      <minimumSize width="100" height="100"/>
-                      <preferredSize width="100" height="100"/>
-                      <text value="Edit Account"/>
-                    </properties>
-                  </component>
-                  <component id="bf8b7" class="javax.swing.JButton" binding="LogOut">
-                    <constraints>
-                      <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-                      <gridbag top="50" left="20" bottom="20" right="20" weightx="0.0" weighty="0.0"/>
-                    </constraints>
-                    <properties>
-                      <maximumSize width="100" height="100"/>
-                      <minimumSize width="100" height="100"/>
-                      <preferredSize width="100" height="100"/>
-                      <text value="Log out"/>
                     </properties>
                   </component>
                   <component id="a738f" class="javax.swing.JButton" binding="backButton3" default-binding="true">
@@ -1004,6 +968,50 @@
                       <text value="Back"/>
                     </properties>
                   </component>
+                  <component id="bf8b7" class="javax.swing.JButton" binding="LogOut">
+                    <constraints>
+                      <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="10" left="10" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <maximumSize width="100" height="100"/>
+                      <minimumSize width="100" height="50"/>
+                      <preferredSize width="100" height="50"/>
+                      <text value="Log out"/>
+                    </properties>
+                  </component>
+                  <component id="9701d" class="javax.swing.JButton" binding="showAccountBTN">
+                    <constraints>
+                      <grid row="3" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="10" left="10" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <maximumSize width="100" height="100"/>
+                      <minimumSize width="200" height="50"/>
+                      <preferredSize width="200" height="50"/>
+                      <text value="Check Entry"/>
+                    </properties>
+                  </component>
+                  <scrollpane id="9607c" binding="AccountDtPane">
+                    <constraints>
+                      <grid row="2" column="0" row-span="1" col-span="3" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                      <gridbag top="10" left="10" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <minimumSize width="320" height="100"/>
+                      <preferredSize width="320" height="100"/>
+                    </properties>
+                    <border type="none"/>
+                    <children>
+                      <component id="cb65d" class="javax.swing.JTable" binding="AccountDtTable">
+                        <constraints/>
+                        <properties>
+                          <minimumSize width="320" height="100"/>
+                          <preferredSize width="320" height="100"/>
+                        </properties>
+                      </component>
+                    </children>
+                  </scrollpane>
                 </children>
               </grid>
               <grid id="c043c" binding="eventGroupPane" layout-manager="GridBagLayout">
