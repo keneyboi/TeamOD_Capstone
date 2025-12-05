@@ -94,6 +94,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     private JButton backButton1;
     private JButton seeAttendanceButton;
     private JButton backButton3;
+    private JButton LogOut;
 
     // selected data segments
     private Account currentAccount;
@@ -178,8 +179,8 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                         passwordPF.setText("");
                         JOptionPane.showMessageDialog(null, "Login Success");
                         cardLayout.show(contentPanel, "MainMenu");
-                        setLocationRelativeTo(null);
                         setSize(medium);
+                        setLocationRelativeTo(null);
                         return;
                     }
                 }
@@ -334,12 +335,20 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String selected = (String)mainGroupCB.getSelectedItem();
+
+                if (selected == null || selected.equals("Choose Event Group") || selected.equals("<None>")) {
+                    return;
+                }
+
                 eventSelected = null;
+
+
+                mainEventCB.removeAllItems();
+                mainEventCB.addItem("Choose Event");
+
                 for(EventGroup eV : currentAccount.getListOfEventGroup()){
                     if(eV.getName().equals(selected)){
                         eventGroupSelected = eV;
-                        mainEventCB.removeAllItems();
-                        mainEventCB.addItem("Choose Event");
                         for(Event aV : eV.getListOfEvents()){
                             mainEventCB.addItem(aV.getName());
                         }
@@ -348,20 +357,29 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                 }
             }
         });
+
         mainEventCB.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String selected = (String)mainEventCB.getSelectedItem();
+
+
+                if (selected == null || selected.equals("Choose Event")) {
+                    return;
+                }
+
                 if(eventGroupSelected != null){
                     for(Event eA : eventGroupSelected.getListOfEvents()){
                         if(eA.getName().equals(selected)){
                             eventSelected = eA;
+                            System.out.println("Main Menu Selected: " + eventSelected.getName());
                             return;
                         }
                     }
                 }
             }
         });
+
         scanLogoHereButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -425,12 +443,26 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                 innerCardLayout.show(InnerCardPanel, "Account");
             }
         });
+
+        LogOut.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cardLayout.show(contentPanel, "LogIn");
+                innerCardLayout.show(InnerCardPanel, "Main Screen");
+                hasLogin = false;
+                setSize(small);
+                setLocationRelativeTo(null);
+            }
+        });
     }
 
     // this function is called after log in, when the current user is initialized.
     // it aims to initialize or update all of the UI when something is added.
     public void updateDataSegments(){
-        if(!currentAccount.getListOfEventGroup().isEmpty()){
+        mainGroupCB.removeAllItems();
+        mainEventCB.removeAllItems();
+
+        if(currentAccount.getListOfEventGroup() != null && !currentAccount.getListOfEventGroup().isEmpty()){
             mainGroupCB.addItem("Choose Event Group");
             for(EventGroup e : currentAccount.getListOfEventGroup()){
                 mainGroupCB.addItem(e.getName());
@@ -438,8 +470,8 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         } else {
             mainGroupCB.addItem("<None>");
         }
-        mainEventCB.addItem("Choose Event");
 
+        mainEventCB.addItem("Choose Event");
         usernameLabel.setText("Welcome " + currentAccount.getName() + "!");
     }
 
@@ -852,10 +884,17 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     }
 
     public void initializeFiles() throws DefaultErrorException {
+
+        eventSelected = null;
+        eventGroupSelected = null;
+
+
         getEventGroupFolder();
         assignEventFileToEventGroupDirectory();
+
+
         showAccountDetails();
-        updateDataSegments();
+        updateDataSegments(); // This now clears and reloads the main CBs
     }
 
     public static void main(String[] args) throws DefaultErrorException {

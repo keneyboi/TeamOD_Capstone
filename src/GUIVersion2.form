@@ -959,7 +959,7 @@
                     </constraints>
                     <properties>
                       <font name="Arial Rounded MT Bold" size="24" style="1"/>
-                      <text value="Event Creation"/>
+                      <text value="Account Details"/>
                     </properties>
                   </component>
                   <component id="41fa0" class="javax.swing.JLabel">
@@ -983,7 +983,7 @@
                       <text value="Edit Account"/>
                     </properties>
                   </component>
-                  <component id="bf8b7" class="javax.swing.JButton">
+                  <component id="bf8b7" class="javax.swing.JButton" binding="LogOut">
                     <constraints>
                       <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                       <gridbag top="50" left="20" bottom="20" right="20" weightx="0.0" weighty="0.0"/>
