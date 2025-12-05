@@ -77,7 +77,6 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     private ScannerCamera camera;
 
     // added for event selection
-    private JComboBox<String> eventSelectCB;
     private JComboBox mainEventCB;
     private JButton scanLogoHereButton;
     private JButton addNewStudentBTN;
@@ -326,7 +325,6 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                     JOptionPane.showMessageDialog(null, "Successfully Added an Event");
                     eventNameTF.setText("");
                     lateTImeTF.setText("");
-                    addEventCB();
                 }
             }
         });
@@ -568,10 +566,10 @@ public class GUIVersion2 extends JFrame implements ActionListener {
 
 
     // everything that needs to be initialized before set visible is called should all be placed here
-    public void initializeDataSegments(){
+    public void initializeDataSegments() {
         try {
-            listOfAccounts = (List<Account>)CSVManager.getFromCSV("out/Account/AccountList.csv");
-            for(Account a : listOfAccounts){
+            listOfAccounts = (List<Account>) CSVManager.getFromCSV("out/Account/AccountList.csv");
+            for (Account a : listOfAccounts) {
                 System.out.println(a);
             }
         } catch (DefaultErrorException e) {
@@ -603,31 +601,11 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         // adding of action listeners
         accountBT.addActionListener(this);
         eventGroupBT.addActionListener(this);
-        for(JButton b : IDButtons){
+        for (JButton b : IDButtons) {
             b.addActionListener(this);
         }
-        for(JButton b : EventButtons){
+        for (JButton b : EventButtons) {
             b.addActionListener(this);
-        }
-    }
-
-    private void addEventCB() {
-
-        eventSelectCB.removeAllItems();
-        boolean hasEvents = false;
-        if (currentAccount != null && currentAccount.getListOfEventGroup() != null) {
-            for (EventGroup eg : currentAccount.getListOfEventGroup()) {
-                if (eg.getListOfEvents() != null) {
-                    for (Event e : eg.getListOfEvents()) {
-                        eventSelectCB.addItem(eg.getName() + " - " + e.getName());
-                        hasEvents = true;
-                    }
-                }
-            }
-        }
-
-        if (!hasEvents) {
-            eventSelectCB.addItem("<No Events>");
         }
     }
 
@@ -877,7 +855,6 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         getEventGroupFolder();
         assignEventFileToEventGroupDirectory();
         showAccountDetails();
-        addEventCB();
         updateDataSegments();
     }
 
