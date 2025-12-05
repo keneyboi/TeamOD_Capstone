@@ -4,7 +4,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class ListRowItem extends JPanel {
-    public ListRowItem(String title, String subtitle, boolean isSelectable) {
+    public ListRowItem(String title, String subtitle) {
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createLineBorder(Color.GRAY));
 

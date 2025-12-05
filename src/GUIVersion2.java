@@ -1076,7 +1076,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             listContainerPanel.add(new JLabel("No events found in this group."));
         } else {
             for (Event e : events) {
-                ListRowItem item = new ListRowItem(e.getName(), "Late Time: " + e.getLateTime(), true);
+                ListRowItem item = new ListRowItem(e.getName(), "Late Time: " + e.getLateTime());
 
                 // highlight the jpanel when clicked
                 MouseAdapter select = new MouseAdapter() {
@@ -1114,8 +1114,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                     subText = s.getID() + " | " + s.getSection() + " | " + s.getTimeIn();
                 }
 
-                // passes false to the isSelectable so it cannot be selected (might change later)
-                ListRowItem row = new ListRowItem(p.getName(), subText, false);
+                ListRowItem row = new ListRowItem(p.getName(), subText);
                 listContainerPanel.add(row);
                 listContainerPanel.add(Box.createRigidArea(new Dimension(0, 5)));
             }
