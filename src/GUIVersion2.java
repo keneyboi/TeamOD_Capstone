@@ -86,7 +86,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     private JPanel TopBorderPanel;
     private JLabel usernameLabel;
     private JComboBox eventGroupCB;
-    private JComboBox comboBox2;
+
     private JButton backButton;
     private JButton backButton2;
     private JButton backButton1;
@@ -111,6 +111,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     private static List<Student> resultListStudent;
 
     // for filtering
+    private JComboBox filterCB;
     private boolean isViewingStudents = false;
 
     private boolean hasLogin = false;
@@ -140,10 +141,10 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             }
         });
 
-        comboBox2.addActionListener(new ActionListener() {
+        filterCB.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String selected = (String) comboBox2.getSelectedItem();
+                String selected = (String) filterCB.getSelectedItem();
                 applyFilter(selected);
             }
         });
@@ -473,6 +474,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                     eventDetailsCB.setSelectedIndex(0);
                 }
 
+                updateFilterOptions(false);
                 refreshListUI();
             }
 
@@ -528,10 +530,10 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                 String selectedGroupName = (String) eventDetailsCB.getSelectedItem();
                 if (selectedGroupName == null || selectedGroupName.equals("Choose Event Group")) return;
 
-                // Find the group object
+                updateFilterOptions(false);
+
                 for(EventGroup eg : currentAccount.getListOfEventGroup()){
                     if(eg.getName().equals(selectedGroupName)){
-                        // Load this group's events into the list
                         loadEventsList(eg.getListOfEvents());
                         return;
                     }
@@ -539,7 +541,6 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             }
         });
 
-// 3. Add Listener for "See Attendance" Button
         seeAttendanceButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -547,7 +548,8 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                     JOptionPane.showMessageDialog(null, "Please select an Event first!");
                     return;
                 }
-                // Load the attendees of the selected event
+
+                updateFilterOptions(true);
                 loadStudentList(currentSelectedEvent.getListOfAttendees());
             }
         });
@@ -1088,7 +1090,6 @@ public class GUIVersion2 extends JFrame implements ActionListener {
 
     // for event(jpanel) lists
     private void loadEventsList(List<Event> events) {
-        updateFilterOptions(false);
         listContainerPanel.removeAll();
         currentSelectedEvent = null;
         currentSelectedRow = null;
@@ -1124,7 +1125,6 @@ public class GUIVersion2 extends JFrame implements ActionListener {
 
     // for student(jpanel) list
     private void loadStudentList(List<Person> attendees) {
-        updateFilterOptions(true);
         listContainerPanel.removeAll();
 
         if (attendees == null || attendees.isEmpty()) {
@@ -1167,27 +1167,27 @@ public class GUIVersion2 extends JFrame implements ActionListener {
 
     // for filtering
     private void updateFilterOptions(boolean forStudents) {
-        ActionListener[] listeners = comboBox2.getActionListeners();
-        for (ActionListener l : listeners) comboBox2.removeActionListener(l);
+        ActionListener[] listeners = filterCB.getActionListeners();
+        for (ActionListener l : listeners) filterCB.removeActionListener(l);
 
-        comboBox2.removeAllItems();
-        comboBox2.addItem("Sort By...");
+        filterCB.removeAllItems();
+        filterCB.addItem("Sort By...");
 
         if (forStudents) {
-            comboBox2.addItem("Name (A-Z)");
-            comboBox2.addItem("Name (Z-A)");
-            comboBox2.addItem("Time (Oldest)");
-            comboBox2.addItem("Time (Newest)");
-            comboBox2.addItem("Section");
-            comboBox2.addItem("Course");
-            comboBox2.addItem("Year");
+            filterCB.addItem("Name (A-Z)");
+            filterCB.addItem("Name (Z-A)");
+            filterCB.addItem("Time (Oldest)");
+            filterCB.addItem("Time (Newest)");
+            filterCB.addItem("Section");
+            filterCB.addItem("Course");
+            filterCB.addItem("Year");
         } else {
-            comboBox2.addItem("Name (A-Z)");
-            comboBox2.addItem("Name (Z-A)");
-            comboBox2.addItem("Late Time");
+            filterCB.addItem("Name (A-Z)");
+            filterCB.addItem("Name (Z-A)");
+            filterCB.addItem("Late Time");
         }
 
-        for (ActionListener l : listeners) comboBox2.addActionListener(l);
+        for (ActionListener l : listeners) filterCB.addActionListener(l);
         isViewingStudents = forStudents;
     }
 
