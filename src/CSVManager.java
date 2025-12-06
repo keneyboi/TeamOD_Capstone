@@ -46,12 +46,12 @@ public class CSVManager {
                         : "N/A";
 
                 String startLine = br.readLine();
-                String startTime = (startLine != null && startLine.contains(":"))
+                String startTime = (startLine != null && startLine.contains("attendance started:"))
                         ? startLine.substring(startLine.indexOf(":") + 1).trim()
                         : "N/A";
 
                 String endLine = br.readLine();
-                String endTime = (endLine != null && endLine.contains(":"))
+                String endTime = (endLine != null && endLine.contains("attendance ended:"))
                         ? endLine.substring(endLine.indexOf(":") + 1).trim()
                         : "N/A";
 

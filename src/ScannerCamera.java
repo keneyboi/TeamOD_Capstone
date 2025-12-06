@@ -88,7 +88,7 @@ public class ScannerCamera {
                     Result result = new MultiFormatReader().decode(bitmap);
 
                     String res = Encryption.decrypt(result.getText());
-                    String[] toAdd = res.split(",");
+                    String[] toAdd = res.split("\\s*\\|\\s*");
                     Student p = new Student(toAdd[0], toAdd[1], toAdd[2], toAdd[3], toAdd[4]);
 
                     boolean flag = false;

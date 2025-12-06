@@ -6,7 +6,10 @@ import java.awt.event.MouseEvent;
 public class ListRowItem extends JPanel {
     public ListRowItem(String title, String subtitle) {
         setLayout(new BorderLayout());
-        setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(1, 1, 1, 1),
+                BorderFactory.createLineBorder(Color.GRAY, 1)
+        ));
 
         setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
         setBackground(UIManager.getColor("Panel.background"));
@@ -20,8 +23,6 @@ public class ListRowItem extends JPanel {
         // event or student names
         JTextArea titleArea = new JTextArea(title);
         titleArea.setFont(new Font("Arial", Font.BOLD, 14));
-        titleArea.setLineWrap(true);
-        titleArea.setWrapStyleWord(true);
         titleArea.setOpaque(false);
         titleArea.setEditable(false);
         titleArea.setFocusable(false);
@@ -34,7 +35,7 @@ public class ListRowItem extends JPanel {
 
         // add the name and time to the jpanel
         textContentPanel.add(titleArea);
-        textContentPanel.add(Box.createRigidArea(new Dimension(0, 2)));
+        textContentPanel.add(Box.createRigidArea(new Dimension(0, 1)));
         textContentPanel.add(subLabel);
 
         add(textContentPanel, BorderLayout.CENTER);

@@ -913,7 +913,7 @@
                       <text value="See Attendance"/>
                     </properties>
                   </component>
-                  <component id="b47ee" class="javax.swing.JButton" default-binding="true">
+                  <component id="b47ee" class="javax.swing.JButton" binding="deleteButton">
                     <constraints>
                       <grid row="4" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                       <gridbag top="10" left="10" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
@@ -922,7 +922,7 @@
                       <text value="Delete"/>
                     </properties>
                   </component>
-                  <component id="994e7" class="javax.swing.JButton" default-binding="true">
+                  <component id="994e7" class="javax.swing.JButton" binding="updateButton">
                     <constraints>
                       <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                       <gridbag top="10" left="10" bottom="10" right="10" weightx="0.0" weighty="0.0"/>

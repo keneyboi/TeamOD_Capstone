@@ -112,7 +112,12 @@ public class GUIVersion2 extends JFrame implements ActionListener {
 
     // for filtering
     private JComboBox filterCB;
+    private JButton deleteButton;
+    private JButton updateButton;
     private boolean isViewingStudents = false;
+
+    // for deleting
+    private Person currentSelectedPerson = null;
 
     private boolean hasLogin = false;
 
@@ -138,6 +143,43 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                     else b.setVisible(false);
                 }
 
+            }
+        });
+
+        updateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Updating...");
+
+                if (isViewingStudents && currentSelectedEvent != null) {
+                    loadRowList(currentSelectedEvent.getListOfAttendees());
+                } else {
+                    String groupName = (String) eventDetailsCB.getSelectedItem();
+                    if (groupName != null && !groupName.equals("Choose Event Group")) {
+                        for(EventGroup eg : currentAccount.getListOfEventGroup()){
+                            if(eg.getName().equals(groupName)){
+                                loadRowList(eg.getListOfEvents());
+                                break;
+                            }
+                        }
+                    }
+                }
+                System.out.println("Updated");
+            }
+        });
+
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (isViewingStudents) {
+                    deleteSelectedStudent();
+                } else {
+                    if (currentSelectedEvent != null) {
+                        deleteSelectedEvent();
+                    } else {
+                        deleteCurrentGroup();
+                    }
+                }
             }
         });
 
@@ -534,7 +576,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
 
                 for(EventGroup eg : currentAccount.getListOfEventGroup()){
                     if(eg.getName().equals(selectedGroupName)){
-                        loadEventsList(eg.getListOfEvents());
+                        loadRowList(eg.getListOfEvents());
                         return;
                     }
                 }
@@ -550,7 +592,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                 }
 
                 updateFilterOptions(true);
-                loadStudentList(currentSelectedEvent.getListOfAttendees());
+                loadRowList(currentSelectedEvent.getListOfAttendees());
             }
         });
 
@@ -713,16 +755,11 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         else lTime = "Late Time: " + lTime;
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(eg.getPathName() + "/" + name + ".csv"))) {
-            bw.write("Event: " + name);
-            bw.newLine();
-            bw.write(lTime);
-            bw.newLine();
-            bw.write("Attendance started: N/A");
-            bw.newLine();
-            bw.write("Attendance ended: N/A");
-            bw.newLine();
-            bw.write("Students:");
-            bw.newLine();
+            bw.write("Event: " + name); bw.newLine();
+            bw.write(lTime); bw.newLine();
+            bw.write("Attendance started: N/A"); bw.newLine();
+            bw.write("Attendance ended: N/A"); bw.newLine();
+            bw.write("Students:"); bw.newLine();
         } catch (IOException e) {
             throw new DefaultErrorException("File can't be open");
         }
@@ -1074,13 +1111,10 @@ public class GUIVersion2 extends JFrame implements ActionListener {
 
     }
 
-    // methods for the event details pane
     private void initScrollContainer() {
         listContainerPanel = new JPanel();
-        // BoxLayout.Y_AXIS makes items stack vertically
         listContainerPanel.setLayout(new BoxLayout(listContainerPanel, BoxLayout.Y_AXIS));
 
-        // Bind the container to the scroll pane
         if (eventDetailsScrollPane != null) {
             eventDetailsScrollPane.setViewportView(listContainerPanel);
         } else {
@@ -1088,76 +1122,78 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         }
     }
 
-    // for event(jpanel) lists
-    private void loadEventsList(List<Event> events) {
+    private void loadRowList(List<?> list) {
         listContainerPanel.removeAll();
-        currentSelectedEvent = null;
         currentSelectedRow = null;
+        currentSelectedPerson = null;
 
-        if (events == null || events.isEmpty()) {
-            listContainerPanel.add(new JLabel("No events found in this group."));
+
+        if (list == null || list.isEmpty()) {
+            listContainerPanel.add(new JLabel("No records found."));
         } else {
-            for (Event e : events) {
-                ListRowItem item = new ListRowItem(e.getName(), "Late Time: " + e.getLateTime());
+            for (Object obj : list) {
+                String title, subtitle;
 
-                // highlight the jpanel when clicked
+                if (obj instanceof Person p) {
+                    p = (Person) obj;
+                    title = p.getName();
+                    if (p instanceof Student s) {
+                        subtitle = s.toString();
+                    } else {
+                        subtitle = p.getInfo();
+                    }
+                } else if (obj instanceof Event e) {
+                    e = (Event) obj;
+                    title = e.getName();
+                    subtitle = e.getLateTime();
+                } else {
+                    title = "Unknown Item";
+                    subtitle = "";
+                }
+
+
+                ListRowItem row = new ListRowItem(title, subtitle);
+
                 MouseAdapter select = new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent me) {
-                        selectRow(item, e);
+                        selectRow(row, obj);
                     }
                 };
 
-                item.addMouseListener(select);
-                // Add listener to the components inside so clicking them also selects the row
-                for(Component c : item.getComponents()) {
+
+                row.addMouseListener(select);
+                for (Component c : row.getComponents()) {
                     c.addMouseListener(select);
                 }
 
-                listContainerPanel.add(item);
-                // Add a tiny invisible gap between rows
-                listContainerPanel.add(Box.createRigidArea(new Dimension(0, 5)));
-            }
-        }
-
-        refreshListUI();
-    }
-
-    // for student(jpanel) list
-    private void loadStudentList(List<Person> attendees) {
-        listContainerPanel.removeAll();
-
-        if (attendees == null || attendees.isEmpty()) {
-            listContainerPanel.add(new JLabel("No attendance records found."));
-        } else {
-            for (Person p : attendees) {
-                String subText = p.getInfo();
-                if(p instanceof Student s) {
-                    subText = s.toString();
-                }
-
-                ListRowItem row = new ListRowItem(p.getName(), subText);
                 listContainerPanel.add(row);
                 listContainerPanel.add(Box.createRigidArea(new Dimension(0, 5)));
             }
         }
-
         refreshListUI();
     }
 
     // highlight logic
-    private void selectRow(JPanel row, Event e) {
+    private void selectRow(JPanel row, Object obj) {
         if (currentSelectedRow != null) {
             currentSelectedRow.setBackground(UIManager.getColor("Panel.background"));
-            currentSelectedRow.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+            currentSelectedRow.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createEmptyBorder(1, 1, 1, 1),
+                    BorderFactory.createLineBorder(Color.GRAY, 1)
+            ));
         }
-
+        if (obj instanceof Person) {
+            currentSelectedPerson = (Person) obj;
+            System.out.println("Selected Student: " + currentSelectedPerson.getName());
+        } else if (obj instanceof Event) {
+            currentSelectedEvent = (Event) obj;
+            currentSelectedPerson = null;
+            System.out.println("Selected Event: " + currentSelectedEvent.getName());
+        }
         currentSelectedRow = row;
-        currentSelectedRow.setBackground(new Color(173, 216, 230)); // Light Blue
+        currentSelectedRow.setBackground(new Color(173, 216, 230));
         currentSelectedRow.setBorder(BorderFactory.createLineBorder(Color.BLUE, 2));
-
-        currentSelectedEvent = e;
-        System.out.println("Selected: " + e.getName());
     }
 
     private void refreshListUI() {
@@ -1216,7 +1252,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                 if (selected.contains("Z-A") || selected.contains("Newest")) {
                     Collections.reverse(sortedList);
                 }
-                loadStudentList(sortedList);
+                loadRowList(sortedList);
             }
         }
 
@@ -1239,7 +1275,105 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             } else if (selected.equals("Late Time")) {
                 events.sort(Comparator.comparing(Event::getLateTime));
             }
-            loadEventsList(events);
+            loadRowList(events);
         }
+    }
+
+    //for deleting
+    private void deleteCurrentGroup() {
+        String groupName = (String) eventDetailsCB.getSelectedItem();
+        if (groupName == null || groupName.equals("Choose Event Group")) {
+            JOptionPane.showMessageDialog(null, "Please select a group first.");
+            return;
+        }
+
+        EventGroup targetGroup = null;
+        for (EventGroup eg : currentAccount.getListOfEventGroup()) {
+            if (eg.getName().equals(groupName)) {
+                targetGroup = eg;
+                break;
+            }
+        }
+
+        if (targetGroup == null) return;
+        if (!targetGroup.getListOfEvents().isEmpty()) {
+            JOptionPane.showMessageDialog(null,
+                    "Error: This Event Group is not empty.\nYou must delete all events inside it before deleting the group.",
+                    "Cannot Delete", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(null,
+                "Are you sure you want to delete the group '" + groupName + "'?",
+                "Confirm Deletion", JOptionPane.YES_NO_OPTION);
+
+        if (confirm != JOptionPane.YES_OPTION) return;
+
+        File folder = new File(targetGroup.getPathName());
+        if (folder.delete()) {
+            currentAccount.removeEventGroup(targetGroup);
+            updateDataSegments();
+            listContainerPanel.removeAll();
+            refreshListUI();
+            JOptionPane.showMessageDialog(null, "Event Group Deleted.");
+        } else {
+            JOptionPane.showMessageDialog(null, "Could not delete folder. Check file permissions.");
+        }
+    }
+
+    private void deleteSelectedEvent() {
+        if (currentSelectedEvent == null) {
+            JOptionPane.showMessageDialog(null, "Please select an event to delete.");
+            return;
+        }
+        int confirm = JOptionPane.showConfirmDialog(null,
+                "Are you sure you want to delete the event '" + currentSelectedEvent.getName() + "'?",
+                "Confirm Deletion", JOptionPane.YES_NO_OPTION);
+
+        if (confirm != JOptionPane.YES_OPTION) return;
+
+        File file = new File(currentSelectedEvent.getPathName() + ".csv");
+        if (file.delete()) {
+            currentSelectedEvent.getEventGroup().removeEvent(currentSelectedEvent);
+            loadRowList(currentSelectedEvent.getEventGroup().getListOfEvents());
+            JOptionPane.showMessageDialog(null, "Event deleted.");
+
+            currentSelectedEvent = null;
+        } else {
+            JOptionPane.showMessageDialog(null, "Could not delete file.");
+        }
+    }
+
+    private void deleteSelectedStudent() {
+        if (currentSelectedPerson == null || currentSelectedEvent == null) {
+            JOptionPane.showMessageDialog(null, "Please select a student to remove.");
+            return;
+        }
+        int confirm = JOptionPane.showConfirmDialog(null,
+                "Are you sure you want to remove '" + currentSelectedPerson.getName() + "'?",
+                "Confirm Deletion", JOptionPane.YES_NO_OPTION);
+
+        if (confirm != JOptionPane.YES_OPTION) return;
+
+        currentSelectedEvent.removeAttendee(currentSelectedPerson);
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(currentSelectedEvent.getPathName() + ".csv"))) {
+            bw.write("Event: " + currentSelectedEvent.getName()); bw.newLine();
+            bw.write("Late Time: " + currentSelectedEvent.getLateTime()); bw.newLine();
+            bw.write("Attendance started: N/A"); bw.newLine();
+            bw.write("Attendance ended: N/A"); bw.newLine();
+            bw.write("Students:"); bw.newLine();
+
+            for (Person p : currentSelectedEvent.getListOfAttendees()) {
+                bw.write(p.toString());
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Error updating file: " + e.getMessage());
+            return;
+        }
+
+        loadRowList(currentSelectedEvent.getListOfAttendees());
+        JOptionPane.showMessageDialog(null, "Student removed.");
     }
 }
