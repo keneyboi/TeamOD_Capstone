@@ -34,31 +34,69 @@ public class CSVManager {
         List<Object> eventInfo = new ArrayList<>();
         String label = null;
 
-        try(BufferedReader br = new BufferedReader(new FileReader(pathname))){
+        try (BufferedReader br = new BufferedReader(new FileReader(pathname))) {
             label = br.readLine();
-            String line;
-            String[] tokens;
 
-            if (label != null && label.equals("Event")) {
-                String lTime = br.readLine();
-                eventInfo.add(lTime != null? lTime : "No Late Time set");
+
+            if (label != null && label.startsWith("Event")) {
+
+                String lTimeLine = br.readLine();
+                String lTime = (lTimeLine != null && lTimeLine.contains(":"))
+                        ? lTimeLine.substring(lTimeLine.indexOf(":") + 1).trim()
+                        : "N/A";
+
+                String startLine = br.readLine();
+                String startTime = (startLine != null && startLine.contains(":"))
+                        ? startLine.substring(startLine.indexOf(":") + 1).trim()
+                        : "N/A";
+
+                String endLine = br.readLine();
+                String endTime = (endLine != null && endLine.contains(":"))
+                        ? endLine.substring(endLine.indexOf(":") + 1).trim()
+                        : "N/A";
+
+                //for the studenst header
+                br.readLine();
+
+                eventInfo.add(lTime);
+                eventInfo.add(startTime);
+                eventInfo.add(endTime);
+
+
+                label = "Event";
             }
 
-            while((line = br.readLine()) != null){
-                switch(label){
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.trim().isEmpty()) continue;
+
+                switch (label) {
                     case "Account":
-                        if (line.trim().isEmpty()) {
-                            continue;
-                        }
-                        tokens = line.split(",");
+                        String[] tokens = line.split(",");
                         accounts.add(new Account(tokens[0], tokens[1], tokens[2].toCharArray()));
                         break;
                     case "Event":
-                        if (line.trim().isEmpty()) {
-                            continue;
+                        String[] studentInfo = line.split("\\s*\\|\\s*");
+                        if (studentInfo.length >= 5) {
+                            String name = studentInfo[0];
+                            String id = studentInfo[1];
+                            String section = studentInfo[2];
+                            String time = studentInfo[4];
+
+                            String course = "N/A";
+                            String year = "N/A";
+                            String courseYearRaw = studentInfo[3];
+
+                            if (courseYearRaw.contains("-")) {
+                                int dashIndex = courseYearRaw.lastIndexOf("-");
+                                course = courseYearRaw.substring(0, dashIndex);
+                                year = courseYearRaw.substring(dashIndex + 1);
+                            } else {
+                                course = courseYearRaw;
+                            }
+
+                            eventInfo.add(new Student(name, id, section, course, year));
                         }
-                        tokens = line.split(",");
-                        eventInfo.add(new Student(tokens[0], tokens[1], tokens[2], tokens[3], tokens[4]));
                         break;
                     default:
                         JOptionPane.showMessageDialog(null, "Invalid File");
@@ -72,12 +110,11 @@ public class CSVManager {
         } catch (IOException e) {
             throw new DefaultErrorException("File access problem");
         }
-        if(label == null) throw new DefaultErrorException("No labeling in CSV");
-        if(label.equals("Account")){
-            return accounts;
-        } else {
-            return eventInfo;
-        }
 
+        if (label != null && label.equals("Event")) {
+            return eventInfo;
+        } else {
+            return accounts;
+        }
     }
 }

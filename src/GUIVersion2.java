@@ -12,8 +12,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
 
 public class GUIVersion2 extends JFrame implements ActionListener {
@@ -111,6 +110,9 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     private EventGroup eventGroupSelected;
     private static List<Student> resultListStudent;
 
+    // for filtering
+    private boolean isViewingStudents = false;
+
     private boolean hasLogin = false;
 
     CardLayout innerCardLayout = (CardLayout)InnerCardPanel.getLayout();
@@ -135,6 +137,14 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                     else b.setVisible(false);
                 }
 
+            }
+        });
+
+        comboBox2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selected = (String) comboBox2.getSelectedItem();
+                applyFilter(selected);
             }
         });
 
@@ -586,22 +596,16 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     }
 
     // accepts event and person, assigns person to event and adds them also to the csv
-    public static void recordAttendance(Event e, Person p) throws DefaultErrorException{
-
+    public static void recordAttendance(Event e, Person p) throws DefaultErrorException {
         // check if student aleary exist
-        // joption will display that student aleary exist
-        for(Person s : e.getListOfAttendees()) {
-            if(s.getInfo().equals(p.getInfo())) {
-                //JOptionPane.showMessageDialog(null, "You already scanned your attendance!");
+        for (Person s : e.getListOfAttendees()) {
+            if (s.getInfo().equals(p.getInfo())) {
                 throw new DefaultErrorException("Student already exist!");
             }
         }
 
-        // instead of printing, successfully recording an attendance
-        // will be shown using joption
-        try(PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(e.getPathName() + ".csv", true)))){
+        try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(e.getPathName() + ".csv", true)))) {
             pw.println(p.toString());
-            System.out.println(p.toString());
             e.addAttendee(p);
             System.out.println("Adding: " + p.getName() + " -> " + e.getName());
         } catch (IOException ex) {
@@ -658,20 +662,25 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     // uses the CSVManager.getFromCsv to pull a list of people and assigns it to an event
     // note! the first person in the peoples has the name of the late time.
     // this event is then added to its parameterized Event Group and also initialized it properly
-    public Event getEventViaEventGroup(EventGroup eG, String eventName){
+    public Event getEventViaEventGroup(EventGroup eG, String eventName) {
         List<?> list = null;
         System.out.println(eG.getPathName() + "/" + eventName);
-        try{
+        try {
             list = CSVManager.getFromCSV(eG.getPathName() + "/" + eventName);
         } catch (DefaultErrorException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
+            return null;
         }
 
         String lateTime = (String) list.get(0);
+        String startTime = (String) list.get(1);
+        String endTime = (String) list.get(2);
+        list.remove(0);
+        list.remove(0);
         list.remove(0);
 
         List<Person> personList = new ArrayList<>();
-        for(Object o : list){
+        for (Object o : list) {
             personList.add((Person) o);
         }
 
@@ -696,14 +705,26 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     }
 
     // creates an empty event and adds it to the desired folder
-    public Event createEvent (String name, String lateTime, EventGroup eg) throws DefaultErrorException {
-        try(BufferedWriter bw = new BufferedWriter(new FileWriter(eg.getPathName() + "/" + name + ".csv"))){
-            bw.write("Event\n");
-            bw.write(lateTime + "\n");
+    public Event createEvent(String name, String lateTime, EventGroup eg) throws DefaultErrorException {
+        String lTime = lateTime.trim();
+        if (lTime.isEmpty()) lTime = "N/A";
+        else lTime = "Late Time: " + lTime;
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(eg.getPathName() + "/" + name + ".csv"))) {
+            bw.write("Event: " + name);
+            bw.newLine();
+            bw.write(lTime);
+            bw.newLine();
+            bw.write("Attendance started: N/A");
+            bw.newLine();
+            bw.write("Attendance ended: N/A");
+            bw.newLine();
+            bw.write("Students:");
+            bw.newLine();
         } catch (IOException e) {
             throw new DefaultErrorException("File can't be open");
         }
-        return new Event(name, eg, lateTime);
+        return new Event(name, eg, lTime);
     }
 
 
@@ -721,7 +742,6 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         setTable();
         setAccountTable();
         initScrollContainer();
-
 
         setSize(small);
         ImageIcon logo = new ImageIcon("assets/test.png");
@@ -1028,7 +1048,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         getEventGroupFolder();
         assignEventFileToEventGroupDirectory();
         showAccountDetails();
-        updateDataSegments(); // This now clears and reloads the main CBs
+        updateDataSegments();
     }
 
     public static void main(String[] args) throws DefaultErrorException {
@@ -1068,6 +1088,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
 
     // for event(jpanel) lists
     private void loadEventsList(List<Event> events) {
+        updateFilterOptions(false);
         listContainerPanel.removeAll();
         currentSelectedEvent = null;
         currentSelectedRow = null;
@@ -1103,6 +1124,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
 
     // for student(jpanel) list
     private void loadStudentList(List<Person> attendees) {
+        updateFilterOptions(true);
         listContainerPanel.removeAll();
 
         if (attendees == null || attendees.isEmpty()) {
@@ -1111,7 +1133,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             for (Person p : attendees) {
                 String subText = p.getInfo();
                 if(p instanceof Student s) {
-                    subText = s.getID() + " | " + s.getSection() + " | " + s.getTimeIn();
+                    subText = s.toString();
                 }
 
                 ListRowItem row = new ListRowItem(p.getName(), subText);
@@ -1141,5 +1163,83 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     private void refreshListUI() {
         listContainerPanel.revalidate();
         listContainerPanel.repaint();
+    }
+
+    // for filtering
+    private void updateFilterOptions(boolean forStudents) {
+        ActionListener[] listeners = comboBox2.getActionListeners();
+        for (ActionListener l : listeners) comboBox2.removeActionListener(l);
+
+        comboBox2.removeAllItems();
+        comboBox2.addItem("Sort By...");
+
+        if (forStudents) {
+            comboBox2.addItem("Name (A-Z)");
+            comboBox2.addItem("Name (Z-A)");
+            comboBox2.addItem("Time (Oldest)");
+            comboBox2.addItem("Time (Newest)");
+            comboBox2.addItem("Section");
+            comboBox2.addItem("Course");
+            comboBox2.addItem("Year");
+        } else {
+            comboBox2.addItem("Name (A-Z)");
+            comboBox2.addItem("Name (Z-A)");
+            comboBox2.addItem("Late Time");
+        }
+
+        for (ActionListener l : listeners) comboBox2.addActionListener(l);
+        isViewingStudents = forStudents;
+    }
+
+    private void applyFilter(String selected) {
+        if (selected == null || selected.equals("Sort By...")) return;
+
+        if (isViewingStudents) {
+            if (currentSelectedEvent == null) return;
+
+            FilterManager fm = new FilterManager(currentSelectedEvent);
+            List<Person> sortedList = null;
+
+            if (selected.contains("Name")) {
+                sortedList = fm.filterList("name");
+            } else if (selected.contains("Time")) {
+                sortedList = fm.filterList("time");
+            } else if (selected.equals("Section")) {
+                sortedList = fm.filterList("section");
+            } else if (selected.equals("Course")) {
+                sortedList = fm.filterList("course");
+            } else if (selected.equals("Year")) {
+                sortedList = fm.filterList("year");
+            }
+
+            if (sortedList != null) {
+                if (selected.contains("Z-A") || selected.contains("Newest")) {
+                    Collections.reverse(sortedList);
+                }
+                loadStudentList(sortedList);
+            }
+        }
+
+        else {
+            String groupName = (String) eventDetailsCB.getSelectedItem();
+            EventGroup eg = null;
+            for (EventGroup group : currentAccount.getListOfEventGroup()) {
+                if (group.getName().equals(groupName)) {
+                    eg = group;
+                    break;
+                }
+            }
+
+            if (eg == null) return;
+            List<Event> events = new ArrayList<>(eg.getListOfEvents());
+
+            if (selected.contains("Name")) {
+                events.sort(Comparator.comparing(Event::getName, String.CASE_INSENSITIVE_ORDER));
+                if (selected.contains("Z-A")) Collections.reverse(events);
+            } else if (selected.equals("Late Time")) {
+                events.sort(Comparator.comparing(Event::getLateTime));
+            }
+            loadEventsList(events);
+        }
     }
 }

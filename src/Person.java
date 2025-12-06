@@ -25,6 +25,6 @@ public class Person {
         return timeIn;
     }
 
-    public String toString(){ return name + "," + info;}
+    public String toString(){ return name + " | " + info;}
     public String getPathName(){return "out/Person Info Library/" + info + " (" + name + ").png";}
 }

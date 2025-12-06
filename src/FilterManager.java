@@ -21,6 +21,12 @@ public class FilterManager {
             case "year":
                 filteredList.sort(new Filters.FilterByYear());
                 break;
+            case "section":
+                filteredList.sort(new Filters.FilterBySection());
+                break;
+            case "course":
+                filteredList.sort(new Filters.FilterByCourse());
+                break;
             default:
                 System.out.println("Invalid order");
 
