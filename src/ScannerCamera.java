@@ -123,4 +123,8 @@ public class ScannerCamera {
     }
     public boolean isOpen(){ return isOpen; }
 
+    // BUG 1: When the id is invalid and goes out of bounds, the camera stutters and errors causing the
+    // cam to stay open and not close its internal thread:
+
+
 }
