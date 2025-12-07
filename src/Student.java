@@ -1,5 +1,6 @@
 import java.time.Instant;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Student extends Person{
@@ -19,20 +20,28 @@ public class Student extends Person{
     public String getCourse() {return course;}
     public String getYear() {return year;}
 
-    public static String formatInstant(String instantString) {
+    public static String formatInstant(Instant instantString) {
         if (instantString == null || instantString.equals("N/A")) return "N/A";
         try {
-            java.time.Instant instant = java.time.Instant.parse(instantString);
-
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd,yyyy hh:mm a").withZone(ZoneId.systemDefault());
 
-            return formatter.format(instant);
+            return formatter.format(instantString);
         } catch (Exception e) {
-            return instantString;
+            return "N/A";
         }
     }
 
-    public String toString(){return super.toString() + " | " + section + " | " + course + "-" + year + " | " + formatInstant(getTimeIn().toString());}
+    public static java.time.Instant parseTime(String timeStr) {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd,yyyy hh:mm a")
+                    .withZone(ZoneId.systemDefault());
+            return ZonedDateTime.parse(timeStr, formatter).toInstant();
+        } catch (Exception e) {
+            return java.time.Instant.now();
+        }
+    }
+
+    public String toString(){return super.toString() + " | " + section + " | " + course + " | " + year + " | " + formatInstant(getTimeIn());}
     public String getPathName(){
         return "out/Student ID Library/" + getInfo() + " (" + getName() + ").png";
     }

@@ -11,6 +11,10 @@ public class Person {
         this.timeIn = Instant.now();
     }
 
+    public void setTimeIn(Instant timeIn) {
+        this.timeIn = timeIn;
+    }
+
     //Getters
 
     public String getName() {

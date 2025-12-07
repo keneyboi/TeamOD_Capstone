@@ -113,11 +113,16 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     // for filtering
     private JComboBox filterCB;
     private JButton deleteButton;
-    private JButton updateButton;
+    private JButton downloadCSVButton;
+    private JButton downloadQRButton;
     private boolean isViewingStudents = false;
 
     // for deleting
     private Person currentSelectedPerson = null;
+
+    // for download
+    JFileChooser fileChooser = new JFileChooser();
+    private String currentQRPath = null;
 
     private boolean hasLogin = false;
 
@@ -146,38 +151,47 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             }
         });
 
-        updateButton.addActionListener(new ActionListener() {
+        downloadCSVButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Updating...");
-
-                if (isViewingStudents && currentSelectedEvent != null) {
-                    loadRowList(currentSelectedEvent.getListOfAttendees());
-                } else {
-                    String groupName = (String) eventDetailsCB.getSelectedItem();
-                    if (groupName != null && !groupName.equals("Choose Event Group")) {
-                        for(EventGroup eg : currentAccount.getListOfEventGroup()){
-                            if(eg.getName().equals(groupName)){
-                                loadRowList(eg.getListOfEvents());
-                                break;
-                            }
-                        }
-                    }
+                if (currentSelectedPerson != null || currentSelectedEvent == null) {
+                    JOptionPane.showMessageDialog(null,
+                            "No Event selected. Please choose an event to download.",
+                            "Selection Error", JOptionPane.WARNING_MESSAGE);
+                    return;
                 }
-                System.out.println("Updated");
-            }
-        });
 
-        deleteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (isViewingStudents) {
-                    deleteSelectedStudent();
-                } else {
-                    if (currentSelectedEvent != null) {
-                        deleteSelectedEvent();
-                    } else {
-                        deleteCurrentGroup();
+                File source = new File(currentSelectedEvent.getPathName() + ".csv");
+
+                if (!source.exists()) {
+                    JOptionPane.showMessageDialog(null,
+                            "System Error: The original CSV file is missing!\nPath: " + source.getPath(),
+                            "File Not Found", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                fileChooser.setDialogTitle("Download Attendance CSV");
+                fileChooser.setSelectedFile(new File(source.getName()));
+
+                int userSelection = fileChooser.showSaveDialog(GUIVersion2.this);
+
+                if (userSelection == JFileChooser.APPROVE_OPTION) {
+                    File destinationFile = fileChooser.getSelectedFile();
+                    if (!destinationFile.getName().toLowerCase().endsWith(".csv")) {
+                        destinationFile = new File(destinationFile.getAbsolutePath() + ".csv");
+                    }
+
+                    try {
+                        java.nio.file.Files.copy(
+                                source.toPath(),
+                                destinationFile.toPath(),
+                                java.nio.file.StandardCopyOption.REPLACE_EXISTING
+                        );
+
+                        JOptionPane.showMessageDialog(null, "File downloaded successfully!\nSaved to: " + destinationFile.getAbsolutePath());
+
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(null, "Download Failed: " + ex.getMessage());
                     }
                 }
             }
@@ -255,7 +269,8 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             public void actionPerformed(ActionEvent e) {
                 Student s = new Student(nameTF.getText(), IDTF.getText(), sectionTF.getText(), courseTF.getText(), yearTF.getText());
                 try {
-                    ImageIcon img = new ImageIcon(generateQRCode(s));
+                    currentQRPath = generateQRCode(s);
+                    ImageIcon img = new ImageIcon(currentQRPath);
                     generateQRImageLabel.setIcon(img);
                 } catch (WriterException ex) {
                     throw new RuntimeException(ex);
@@ -274,6 +289,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                 yearTF.setText("");
                 sectionTF.setText("");
                 generateQRImageLabel.setIcon(null);
+                currentQRPath = null;
             }
         });
 
@@ -596,6 +612,55 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             }
         });
 
+        downloadQRButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (currentQRPath == null) {
+                    JOptionPane.showMessageDialog(null,
+                            "No QR Code generated yet!\nPlease click 'Generate ID' first.",
+                            "Missing QR", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
+                File sourceFile = new File(currentQRPath);
+
+                if (!sourceFile.exists()) {
+                    JOptionPane.showMessageDialog(null,
+                            "System Error: The generated file is missing.",
+                            "File Not Found", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                fileChooser.setDialogTitle("Save QR Code Image");
+                fileChooser.setSelectedFile(new File(sourceFile.getName())); // Default name
+
+                int userSelection = fileChooser.showSaveDialog(GUIVersion2.this);
+
+                if (userSelection == JFileChooser.APPROVE_OPTION) {
+                    File destinationFile = fileChooser.getSelectedFile();
+
+
+                    if (!destinationFile.getName().toLowerCase().endsWith(".png")) {
+                        destinationFile = new File(destinationFile.getAbsolutePath() + ".png");
+                    }
+
+                    // 3. COPY FILE
+                    try {
+                        java.nio.file.Files.copy(
+                                sourceFile.toPath(),
+                                destinationFile.toPath(),
+                                java.nio.file.StandardCopyOption.REPLACE_EXISTING
+                        );
+
+                        JOptionPane.showMessageDialog(null, "QR Code saved to:\n" + destinationFile.getAbsolutePath());
+
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(null, "Download Failed: " + ex.getMessage());
+                    }
+                }
+
+            }
+        });
     }
 
     // this function is called after log in, when the current user is initialized.
@@ -697,7 +762,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             for(Event e : eG.getListOfEvents()){
                 System.out.println("----> Event: " + e.getName() + " Late Time: " + e.getLateTime());
                 for(Person p : e.getListOfAttendees()){
-                    System.out.println("---------> " + p.toString());
+                    System.out.println("---------> " + ((Student)p).toString());
                 }
             }
         }
@@ -1138,7 +1203,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                     p = (Person) obj;
                     title = p.getName();
                     if (p instanceof Student s) {
-                        subtitle = s.toString();
+                        subtitle = s.getSection() + " | " + s.getCourse() + " | " + s.getYear() + " | " + Student.formatInstant(s.getTimeIn());
                     } else {
                         subtitle = p.getInfo();
                     }

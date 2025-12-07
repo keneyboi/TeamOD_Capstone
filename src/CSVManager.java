@@ -77,25 +77,18 @@ public class CSVManager {
                         break;
                     case "Event":
                         String[] studentInfo = line.split("\\s*\\|\\s*");
-                        if (studentInfo.length >= 5) {
+                        if (studentInfo.length >= 6) {
                             String name = studentInfo[0];
                             String id = studentInfo[1];
                             String section = studentInfo[2];
-                            String time = studentInfo[4];
-
-                            String course = "N/A";
-                            String year = "N/A";
-                            String courseYearRaw = studentInfo[3];
-
-                            if (courseYearRaw.contains("-")) {
-                                int dashIndex = courseYearRaw.lastIndexOf("-");
-                                course = courseYearRaw.substring(0, dashIndex);
-                                year = courseYearRaw.substring(dashIndex + 1);
-                            } else {
-                                course = courseYearRaw;
+                            String course = studentInfo[3];
+                            String year = studentInfo[4];
+                            String time = studentInfo[5];
+                            Student s = new Student(name, id, section, course, year);
+                            if (!time.equals("N/A")) {
+                                s.setTimeIn(Student.parseTime(time));
                             }
-
-                            eventInfo.add(new Student(name, id, section, course, year));
+                            eventInfo.add(s);
                         }
                         break;
                     default:
