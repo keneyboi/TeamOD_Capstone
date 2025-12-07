@@ -23,8 +23,9 @@ public class Account {
     }
 
     public void addEventGroup(EventGroup e) {
-
-        listOfEventGroups.add(e);
+        if (!listOfEventGroups.contains(e)) {
+            listOfEventGroups.add(e);
+        }
     }
 
     public void removeEventGroup(EventGroup e) {
@@ -95,5 +96,7 @@ public class Account {
     public String toString(){
         return name + "," + email + "," + new String(password);
     }
+
+
 
 }

@@ -15,7 +15,6 @@ public class EventGroup {
         this.account = account;
     }
 
-
     public void addEvent(Event e) {
         listOfEvents.add(e);
         numOfEvents++;

@@ -34,7 +34,6 @@ public class Event {
     public List<Person> getListOfAttendees() { return listOfAttendees; }
     public int getNumOfAttendees() { return numOfAttendees; }
 
-
     public void addAttendee(Person p) {
         listOfAttendees.add(p);
         numOfAttendees++;
