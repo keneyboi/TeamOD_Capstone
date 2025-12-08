@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.Dimension;
 import java.awt.event.*;
 import java.io.*;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -848,15 +849,13 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         initScrollContainer();
 
         setSize(small);
-        ImageIcon logo = new ImageIcon("assets/test.png");
-        Image newLogo = logo.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-        logoLabel.setIcon(new ImageIcon(newLogo));
-        setTitle("Attendo");
+        setTitle("Atendo");
         setLocationRelativeTo(null);
         setMinimumSize(new Dimension(250, 380));
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(true);
         add(contentPanel);
+        createUIComponents(); //added function call: for everything UI-related
 
         //Disable Space
         usernameTF.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(' '), "none");
@@ -1173,7 +1172,34 @@ public class GUIVersion2 extends JFrame implements ActionListener {
 
     private void createUIComponents() {
         // TODO: place custom component creation code here
+        // Accomplished by: Asteria (just remove this comment later)
 
+        setIcon(logoLabel, "/atendoLogoLight.png", 130, 130);
+        setIcon(scanLogoHereButton, "/scanLogo.png", 180, 180);
+        //ImageIcon logo = new ImageIcon("assets/test.png");
+        //Image newLogo = logo.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        //logoLabel.setIcon(new ImageIcon(newLogo));
+    }
+
+    //helper method for setting the icon's width and height properly
+    private void setIcon(JComponent comp, String path, int width, int height) {
+        URL imageURL = getClass().getResource(path);
+        if(imageURL == null){
+            System.err.println("Cannot find image: " + path);
+            return;
+        }
+
+        ImageIcon icon = new ImageIcon(imageURL); //create a working icon from path
+        Image scaled = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH); //resize image of icon
+        ImageIcon scaledIcon = new ImageIcon(scaled); //make new icon from resized image
+
+        //check type of component (instanceof), and use it's native setIcon()
+        switch (comp) {
+            case JButton button -> button.setIcon(scaledIcon);
+            case JLabel label -> label.setIcon(scaledIcon);
+            case JToggleButton toggle -> toggle.setIcon(scaledIcon);
+            default -> System.err.println("Component does not support icons: " + comp.getClass().getName());
+        }
     }
 
     private void initScrollContainer() {
