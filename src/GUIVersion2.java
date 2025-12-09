@@ -1171,14 +1171,16 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     }
 
     private void createUIComponents() {
-        // TODO: place custom component creation code here
-        // Accomplished by: Asteria (just remove this comment later)
-
-        setIcon(logoLabel, "/atendoLogoLight.png", 130, 130);
-        setIcon(scanLogoHereButton, "/scanLogo.png", 180, 180);
         //ImageIcon logo = new ImageIcon("assets/test.png");
         //Image newLogo = logo.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
         //logoLabel.setIcon(new ImageIcon(newLogo));
+
+        setIcon(logoLabel, "/atendoLogoLight.png", 130, 130);
+        setIcon(scanLogoHereButton, "/scanIcon.png", 180, 180);
+        setIcon(addNewStudentBTN, "/addStudentIcon.png", 100, 100);
+        setIcon(newEventBTN, "/addEventIcon.png", 100, 100);
+        setIcon(eventDetailsBTN, "/eventDetailsIcon.png", 100, 100);
+        setIcon(accountBTN, "/accountInfoIcon.png", 100, 100);
     }
 
     //helper method for setting the icon's width and height properly
