@@ -125,7 +125,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <grid id="a88fb" binding="DashBoard" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+          <grid id="a88fb" binding="DashBoard" layout-manager="FlowLayout" hgap="5" vgap="10" flow-align="1">
             <constraints border-constraint="West"/>
             <properties>
               <background color="-14145498"/>
@@ -167,7 +167,23 @@
                   <visible value="true"/>
                 </properties>
               </component>
-              <component id="43b10" class="javax.swing.JButton" binding="createIDBT">
+              <component id="8add5" class="javax.swing.JButton" binding="mainScreenPrince">
+                <constraints/>
+                <properties>
+                  <alignmentY value="0.0"/>
+                  <background color="-12763069"/>
+                  <borderPainted value="false"/>
+                  <contentAreaFilled value="false"/>
+                  <font name="Arial Rounded MT Bold" size="10" style="1"/>
+                  <foreground color="-2170651"/>
+                  <maximumSize width="108" height="50"/>
+                  <minimumSize width="120" height="30"/>
+                  <preferredSize width="120" height="30"/>
+                  <text value="Main Screen"/>
+                  <visible value="false"/>
+                </properties>
+              </component>
+              <component id="43b10" class="javax.swing.JButton" binding="createIDPrince">
                 <constraints/>
                 <properties>
                   <alignmentY value="0.0"/>
@@ -180,22 +196,6 @@
                   <minimumSize width="120" height="30"/>
                   <preferredSize width="120" height="30"/>
                   <text value="Create ID"/>
-                  <visible value="false"/>
-                </properties>
-              </component>
-              <component id="8add5" class="javax.swing.JButton" binding="scanIDBT">
-                <constraints/>
-                <properties>
-                  <alignmentY value="0.0"/>
-                  <background color="-12763069"/>
-                  <borderPainted value="false"/>
-                  <contentAreaFilled value="false"/>
-                  <font name="Arial Rounded MT Bold" size="10" style="1"/>
-                  <foreground color="-2170651"/>
-                  <maximumSize width="108" height="50"/>
-                  <minimumSize width="120" height="30"/>
-                  <preferredSize width="120" height="30"/>
-                  <text value="Scan ID"/>
                   <visible value="false"/>
                 </properties>
               </component>
@@ -216,7 +216,7 @@
                   <visible value="true"/>
                 </properties>
               </component>
-              <component id="7ce8a" class="javax.swing.JButton" binding="addEventBT">
+              <component id="7ce8a" class="javax.swing.JButton" binding="addEventPrince">
                 <constraints/>
                 <properties>
                   <alignmentY value="0.0"/>
@@ -232,7 +232,7 @@
                   <visible value="false"/>
                 </properties>
               </component>
-              <component id="3e3b3" class="javax.swing.JButton" binding="checkAttendanceBT">
+              <component id="3e3b3" class="javax.swing.JButton" binding="eventDetailPrince">
                 <constraints/>
                 <properties>
                   <alignmentY value="0.0"/>
@@ -241,11 +241,11 @@
                   <contentAreaFilled value="false"/>
                   <font name="Arial Rounded MT Bold" size="10" style="1"/>
                   <foreground color="-2170651"/>
-                  <label value="Scan"/>
+                  <label value="Event Details"/>
                   <maximumSize width="108" height="50"/>
                   <minimumSize width="120" height="30"/>
                   <preferredSize width="120" height="30"/>
-                  <text value="Scan"/>
+                  <text value="Event Details"/>
                   <visible value="false"/>
                 </properties>
               </component>

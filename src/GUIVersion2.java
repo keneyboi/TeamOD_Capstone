@@ -24,10 +24,10 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     private JPanel InnerCardPanel;
     private JPanel DashBoard;
     private JButton DashboardButton;
-    private JButton checkAttendanceBT;
-    private JButton scanIDBT;
-    private JButton createIDBT;
-    private JButton addEventBT;
+    private JButton eventDetailPrince;
+    private JButton mainScreenPrince;
+    private JButton createIDPrince;
+    private JButton addEventPrince;
     private JButton mainScreenBT;
     private JPanel mainScreenPane;
     private JPanel createIDPane;
@@ -73,6 +73,9 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     private List<Account> listOfAccounts = new ArrayList<>();
     private DefaultTableModel dm = new DefaultTableModel();
     private ScannerCamera camera;
+
+    // for camera
+    private JFrame myFrame = this;
 
     // added for event selection
     private JComboBox mainEventCB;
@@ -130,8 +133,8 @@ public class GUIVersion2 extends JFrame implements ActionListener {
 
     CardLayout innerCardLayout = (CardLayout)InnerCardPanel.getLayout();
     CardLayout cardLayout = (CardLayout)contentPanel.getLayout();
-    JButton[] IDButtons = new JButton[]{createIDBT, scanIDBT};
-    JButton[] EventButtons = new JButton[]{addEventBT, checkAttendanceBT};
+    JButton[] IDButtons = new JButton[]{createIDPrince, mainScreenPrince};
+    JButton[] EventButtons = new JButton[]{addEventPrince, eventDetailPrince};
     Dimension small = new Dimension(320, 520);
     Dimension medium = new Dimension(700, 550);
 
@@ -143,8 +146,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         mainScreenBT.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                innerCardLayout.show(InnerCardPanel, e.getActionCommand());
-                if(getHeight() < 530 && !addEventBT.isVisible()) setSize(getWidth(), 530);
+                if(getHeight() < 530 && !addEventPrince.isVisible()) setSize(getWidth(), 530);
                 for(JButton b : IDButtons){
                     if(!b.isVisible()) b.setVisible(true);
                     else b.setVisible(false);
@@ -366,7 +368,8 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             }
         });
 
-        addEventBT.addActionListener(new ActionListener() {
+
+        addEventPrince.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 innerCardLayout.show(InnerCardPanel, "Add Event");
@@ -510,7 +513,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                 Student startAttendance;
                 if(eventSelected != null && eventGroupSelected != null){
                     System.out.println("Selected: " + eventGroupSelected.getName() + " -> " + eventSelected.getName());
-                    camera = new ScannerCamera();
+                    camera = new ScannerCamera(scanLogoHereButton, myFrame);
                     camera.open();
                 }
             }
@@ -667,6 +670,18 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                     }
                 }
 
+            }
+        });
+        eventDetailPrince.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                innerCardLayout.show(InnerCardPanel, "Event Details");
+            }
+        });
+        mainScreenPrince.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                    innerCardLayout.show(InnerCardPanel, "Main Screen");
             }
         });
     }

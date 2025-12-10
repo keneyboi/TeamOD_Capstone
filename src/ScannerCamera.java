@@ -14,9 +14,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 public class ScannerCamera {
     GUIVersion2 gui;
@@ -28,8 +26,15 @@ public class ScannerCamera {
     Thread thread;
     boolean isOpen = false;
     boolean flag = false;
+    WebcamPanel wp = null;
+    JButton button;
+    JFrame mainFrame;
 
-    public ScannerCamera(){
+    public ScannerCamera(JButton button, JFrame mainFrame){
+        this.button = button;
+        this.mainFrame = mainFrame;
+        Rectangle mainFrameBounds = mainFrame.getBounds();
+
         listStudents.add(new Student("Attendance Start: ", Instant.now() + "", "", "", ""));
         endAttendance = new JButton("End Attendance");
         Webcam.setDriver(new NativeDriver());
@@ -41,7 +46,12 @@ public class ScannerCamera {
         webcam.setViewSize(WebcamResolution.VGA.getSize());
 
         frame = new JFrame("Scanner");
-        WebcamPanel wp = new WebcamPanel(webcam);
+
+        int x = mainFrameBounds.x;
+        int y = mainFrameBounds.y;
+
+        frame.setLocation(x + 30, y + 40);
+        wp = new WebcamPanel(webcam);
         wp.setMirrored(true);
         wp.setFPSDisplayed(true);
         frame.setSize(webcam.getViewSize());
@@ -53,6 +63,7 @@ public class ScannerCamera {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("End Button Pressed");
+                button.setEnabled(true);
                 frame.setVisible(false);
                 thread.interrupt();
                 wp.stop();
@@ -60,6 +71,7 @@ public class ScannerCamera {
                 GUIVersion2.recordAttendanceAdapter(listStudents);
             }
         });
+        frame.setVisible(false);
     }
 
     public static List<Student> getListStudents(){
@@ -67,16 +79,27 @@ public class ScannerCamera {
     }
 
     public void open() {
+        button.setEnabled(false);
         listStudents.clear();
-        isOpen = true;
         webcam.open();
-        frame.setVisible(true);
-        thread = new Thread(()->{
 
+        thread = new Thread(()->{
+            webcam.open();
+            try {
+                thread.sleep(1500);
+            } catch (InterruptedException e) {}
+            frame.setVisible(true);
             while (!Thread.currentThread().isInterrupted()){
+
+                if(frame.isVisible() == false){
+                    button.setEnabled(true);
+                    wp.stop();
+                    webcam.close();
+                    thread.interrupt();
+                }
                 try{
                     frame.repaint();
-                    if(!frame.isVisible() || !webcam.isOpen()){
+                    if(!frame.isVisible() ||  !webcam.isOpen()){
                         System.out.println("Stopping thread");
                         break;
                     }
@@ -88,7 +111,7 @@ public class ScannerCamera {
                     Result result = new MultiFormatReader().decode(bitmap);
 
                     String res = Encryption.decrypt(result.getText());
-                    String[] toAdd = res.split(",");
+                    String[] toAdd = res.split("\\s*\\|\\s*");
                     Student p = new Student(toAdd[0], toAdd[1], toAdd[2], toAdd[3], toAdd[4]);
 
                     boolean flag = false;
@@ -101,7 +124,7 @@ public class ScannerCamera {
 
                     if(!flag){
                         listStudents.add(p);
-                        System.out.println("Added: " + p.getName() + "," + p.getID() + "," + p.getSection() + "," + p.getCourse() + "," + p.getYear() + "," + Student.formatInstant(p.getTimeIn()));
+                        System.out.println("Scanned: " + p.toString());
                         SoundPlayer.playSound("assets/beep.wav");
                     }
                 } catch (NotFoundException | ArrayIndexOutOfBoundsException e) {
@@ -121,7 +144,6 @@ public class ScannerCamera {
     public List<Student> getList(){
         return listStudents;
     }
-    public boolean isOpen(){ return isOpen; }
 
     // BUG 1: When the id is invalid and goes out of bounds, the camera stutters and errors causing the
     // cam to stay open and not close its internal thread:
