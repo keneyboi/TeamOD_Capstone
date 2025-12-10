@@ -50,11 +50,12 @@ public class ScannerCamera {
         int x = mainFrameBounds.x;
         int y = mainFrameBounds.y;
 
-        frame.setLocation(x + 30, y + 40);
+        frame.setLocation(x + 90, y + 60);
         wp = new WebcamPanel(webcam);
         wp.setMirrored(true);
         wp.setFPSDisplayed(true);
-        frame.setSize(webcam.getViewSize());
+        frame.setPreferredSize(new Dimension(510, 460));
+        frame.setSize(510, 460);
         frame.add(wp, BorderLayout.CENTER);
         endAttendance = new JButton("End Attendance");
         endAttendance.setPreferredSize(new Dimension(200, 50));
