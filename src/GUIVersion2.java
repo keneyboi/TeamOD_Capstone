@@ -202,6 +202,21 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             }
         });
 
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (isViewingStudents) {
+                    deleteSelectedStudent();
+                } else {
+                    if (currentSelectedEvent != null) {
+                        deleteSelectedEvent();
+                    } else {
+                        deleteCurrentGroup();
+                    }
+                }
+            }
+        });
+
         filterCB.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
