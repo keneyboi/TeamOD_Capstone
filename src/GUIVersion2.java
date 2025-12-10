@@ -401,6 +401,11 @@ public class GUIVersion2 extends JFrame implements ActionListener {
 
                 String targetEventName = eventNameTF.getText().trim();
 
+                if (targetEventName.contains("/") || targetGroupName.contains("/")) {
+                    JOptionPane.showMessageDialog(null, "Avoid using '/'!");
+                    return;
+                }
+
                 for (EventGroup eg : currentAccount.getListOfEventGroup()) {
                     if (eg.getName().equalsIgnoreCase(targetGroupName)) {
                         for (Event ev : eg.getListOfEvents()) {
