@@ -66,7 +66,7 @@
           </component>
           <component id="dec8f" class="javax.swing.JButton" binding="loginButton" default-binding="true">
             <constraints>
-              <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
               <gridbag top="10" left="10" bottom="0" right="10" weightx="0.0" weighty="0.0"/>
             </constraints>
             <properties>
@@ -76,21 +76,12 @@
           </component>
           <component id="79488" class="javax.swing.JButton" binding="createNewAccountButton" default-binding="true">
             <constraints>
-              <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
               <gridbag top="10" left="10" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
             </constraints>
             <properties>
               <preferredSize width="140" height="40"/>
               <text value="Register"/>
-            </properties>
-          </component>
-          <component id="cda0f" class="javax.swing.JButton" binding="debugButtonButton" default-binding="true">
-            <constraints>
-              <grid row="9" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-              <gridbag top="10" left="10" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
-            </constraints>
-            <properties>
-              <text value="Debug Button"/>
             </properties>
           </component>
           <component id="ea9e5" class="javax.swing.JLabel">

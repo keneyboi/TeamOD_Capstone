@@ -132,7 +132,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     CardLayout cardLayout = (CardLayout)contentPanel.getLayout();
     JButton[] IDButtons = new JButton[]{createIDBT, scanIDBT};
     JButton[] EventButtons = new JButton[]{addEventBT, checkAttendanceBT};
-    Dimension small = new Dimension(300, 400);
+    Dimension small = new Dimension(320, 520);
     Dimension medium = new Dimension(700, 550);
 
 
@@ -323,14 +323,6 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 cardLayout.show(contentPanel, "LogIn");
-            }
-        });
-
-        debugButtonButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setSize(medium);
-                cardLayout.show(contentPanel, "MainMenu");
             }
         });
 
