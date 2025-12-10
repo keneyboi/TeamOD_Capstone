@@ -1125,18 +1125,6 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     }
 
     public static void main(String[] args) throws DefaultErrorException {
-        try {
-            Account test = new Account("Ken", "ken@gmail.com", new char[]{'1', '1', '1','1', '1', '1', 's', '1', '-'});
-            EventGroup eventGroup = new EventGroup("testingEventGroup", test);
-            Event event = new Event("testEvent", eventGroup, "9:20");
-            test.addEventGroup(eventGroup);
-            eventGroup.addEvent(event);
-            System.out.println(event.getPathName());
-
-        } catch (InvalidPasswordException e) {
-            System.out.println("error");
-        }
-
         new GUIVersion2();
     }
 
