@@ -125,7 +125,7 @@ public class ScannerCamera {
 
                     if(!flag){
                         listStudents.add(p);
-                        System.out.println("Scanned: " + p.toString());
+                        System.out.println("Scanned: " + p.getName() + "," + p.getID() + "," + p.getSection() + "," + p.getCourse() + "," + p.getYear() + "," + Student.formatInstant(p.getTimeIn()));
                         SoundPlayer.playSound("assets/beep.wav");
                     }
                 } catch (NotFoundException | ArrayIndexOutOfBoundsException e) {
