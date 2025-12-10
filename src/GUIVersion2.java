@@ -868,9 +868,6 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     public void initializeDataSegments() {
         try {
             listOfAccounts = (List<Account>) CSVManager.getFromCSV("out/Account/AccountList.csv");
-            for (Account a : listOfAccounts) {
-                System.out.println(a);
-            }
         } catch (DefaultErrorException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
