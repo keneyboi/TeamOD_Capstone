@@ -20,7 +20,6 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     private JPanel contentPanel;
     private JPanel OpeningScreen;
     private JPanel MainMenu;
-    private JButton solveButton;
     private JButton SETTINGSButton;
     private JPanel InnerCardPanel;
     private JPanel DashBoard;
@@ -66,7 +65,6 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     private JButton accountExistsBt;
     private JButton logOutButton;
     private JButton debugButtonButton;
-    private JButton scanAttendanceButton;
     private JTextField eventGroupTF;
     private JButton showAccountBTN;
     private JButton createEventButton;
@@ -109,7 +107,6 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     private Account currentAccount;
     private static Event eventSelected;
     private EventGroup eventGroupSelected;
-    private static List<Student> resultListStudent;
 
     // for filtering
     private JComboBox filterCB;
@@ -553,8 +550,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             }
 
         });
-        backButton2.addComponentListener(new ComponentAdapter() {
-        });
+
         backButton2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -729,6 +725,10 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             }
         }
 
+        if (p instanceof Student) {
+            ((Student) p).calculateStatus(e.getLateTime());
+        }
+
         try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(e.getPathName() + ".csv", true)))) {
             pw.println(p.toString());
             e.addAttendee(p);
@@ -778,7 +778,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             for(Event e : eG.getListOfEvents()){
                 System.out.println("----> Event: " + e.getName() + " Late Time: " + e.getLateTime());
                 for(Person p : e.getListOfAttendees()){
-                    System.out.println("---------> " + ((Student)p).toString());
+                    System.out.println("---------> " + p.toString());
                 }
             }
         }
@@ -840,7 +840,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             bw.write(lTime); bw.newLine();
             bw.write("Attendance started: N/A"); bw.newLine();
             bw.write("Attendance ended: N/A"); bw.newLine();
-            bw.write("Students:"); bw.newLine();
+            bw.write("Name,ID,Section,Course,Year,Time In"); bw.newLine();
         } catch (IOException e) {
             throw new DefaultErrorException("File can't be open");
         }
@@ -950,67 +950,6 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         AccountDtTable.setFillsViewportHeight(true);
         AccountDtTable.setRowHeight(25);
     }
-
-
-    /* public void openScanner(Consumer<String[]> callback){
-        new Thread(()->{
-            Webcam webcam = null;
-            JFrame frame = new JFrame("test");
-            try {
-                System.out.println("in");
-                Webcam.setDriver(new NativeDriver());
-
-                webcam = Webcam.getDefault();
-                if (webcam == null) {
-                    System.out.println("No webcam detected!");
-                    return;
-                }
-                webcam.setViewSize(WebcamResolution.VGA.getSize());
-
-                webcam.open();
-
-                WebcamPanel wp = new WebcamPanel(webcam);
-                wp.setMirrored(true);
-                wp.setFPSDisplayed(true);
-                frame.setSize(webcam.getViewSize());
-                frame.setLocation(this.getX() + 500, this.getY());
-                frame.add(wp);
-                frame.setVisible(true);
-
-                while (true){
-                    try{
-                        frame.repaint();
-                        BufferedImage image = webcam.getImage();
-                        if(image == null) continue;
-                        if(!frame.isVisible()){
-                            webcam.close();
-                            return;
-                        }
-                        LuminanceSource source = new BufferedImageLuminanceSource(image);
-                        BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
-
-                        Result result = new MultiFormatReader().decode(bitmap);
-
-                        String res = Encryption.decrypt(result.getText());
-                        callback.accept(res.split(","));
-                        webcam.close();
-                        frame.dispose();
-
-                        break;
-                    } catch (NotFoundException e) {
-                        System.out.println("not found");
-                        Thread.sleep(0);
-                    }
-                }
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Invalid ID");
-                frame.dispose();
-                webcam.close();
-            }
-        }).start();
-    }
-
-     */
 
     public String generateQRCode(Student student) throws WriterException, IOException {
         String data = Encryption.encrypt(student.toString());
@@ -1231,6 +1170,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     }
 
     private void loadRowList(List<?> list) {
+        List<Student> temp;
         listContainerPanel.removeAll();
         currentSelectedRow = null;
         currentSelectedPerson = null;
@@ -1315,7 +1255,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         for (ActionListener l : listeners) filterCB.removeActionListener(l);
 
         filterCB.removeAllItems();
-        filterCB.addItem("Sort By...");
+        filterCB.addItem("<None>");
 
         if (forStudents) {
             filterCB.addItem("Name (A-Z)");
@@ -1325,6 +1265,8 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             filterCB.addItem("Section");
             filterCB.addItem("Course");
             filterCB.addItem("Year");
+            filterCB.addItem("Late");
+            filterCB.addItem("On Time");
         } else {
             filterCB.addItem("Name (A-Z)");
             filterCB.addItem("Name (Z-A)");
@@ -1336,7 +1278,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     }
 
     private void applyFilter(String selected) {
-        if (selected == null || selected.equals("Sort By...")) return;
+        if (selected == null || selected.equals("<None>")) return;
 
         if (isViewingStudents) {
             if (currentSelectedEvent == null) return;
@@ -1344,6 +1286,10 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             FilterManager fm = new FilterManager(currentSelectedEvent);
             List<Person> sortedList = null;
 
+            if (selected.equals("On Time")) {
+                System.out.println("odibwauidbwad");
+                sortedList = fm.filterList("on time");
+            }
             if (selected.contains("Name")) {
                 sortedList = fm.filterList("name");
             } else if (selected.contains("Time")) {
@@ -1354,6 +1300,8 @@ public class GUIVersion2 extends JFrame implements ActionListener {
                 sortedList = fm.filterList("course");
             } else if (selected.equals("Year")) {
                 sortedList = fm.filterList("year");
+            } else if (selected.equals("Late")) {
+                sortedList = fm.filterList("late");
             }
 
             if (sortedList != null) {
@@ -1470,7 +1418,7 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             bw.write("Late Time: " + currentSelectedEvent.getLateTime()); bw.newLine();
             bw.write("Attendance started: N/A"); bw.newLine();
             bw.write("Attendance ended: N/A"); bw.newLine();
-            bw.write("Students:"); bw.newLine();
+            bw.write("Name,ID,Section,Course,Year,Time In,Status"); bw.newLine();
 
             for (Person p : currentSelectedEvent.getListOfAttendees()) {
                 bw.write(p.toString());

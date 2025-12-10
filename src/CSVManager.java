@@ -20,8 +20,16 @@ public class CSVManager {
         try(BufferedWriter bw = new BufferedWriter(new FileWriter(pathName))){
             bw.write(label);
             bw.newLine();
+            if (label.equals("Event")) {
+                bw.write("Name,ID,Section,Course,Year,Time In");
+                bw.newLine();
+            }
             for(int i = 0; i < list.size(); i++){
-                bw.write(list.get(i).toString());
+                if(label.equals("Account")){
+                    bw.write(Encryption.encrypt(list.get(i).toString()));
+                }else{
+                    bw.write(list.get(i).toString());
+                }
                 bw.newLine();
             }
         } catch (IOException e) {
@@ -72,11 +80,12 @@ public class CSVManager {
 
                 switch (label) {
                     case "Account":
+                        line = Encryption.decrypt(line);
                         String[] tokens = line.split(",");
                         accounts.add(new Account(tokens[0], tokens[1], tokens[2].toCharArray()));
                         break;
                     case "Event":
-                        String[] studentInfo = line.split("\\s*\\|\\s*");
+                        String[] studentInfo = line.split(",");
                         if (studentInfo.length >= 6) {
                             String name = studentInfo[0];
                             String id = studentInfo[1];
@@ -88,6 +97,13 @@ public class CSVManager {
                             if (!time.equals("N/A")) {
                                 s.setTimeIn(Student.parseTime(time));
                             }
+
+                            if (studentInfo.length >= 7) {
+                                s.setStatus(studentInfo[6].trim());
+                            } else {
+                                s.setStatus("On Time");
+                            }
+
                             eventInfo.add(s);
                         }
                         break;

@@ -88,7 +88,7 @@ public class ScannerCamera {
                     Result result = new MultiFormatReader().decode(bitmap);
 
                     String res = Encryption.decrypt(result.getText());
-                    String[] toAdd = res.split("\\s*\\|\\s*");
+                    String[] toAdd = res.split(",");
                     Student p = new Student(toAdd[0], toAdd[1], toAdd[2], toAdd[3], toAdd[4]);
 
                     boolean flag = false;
@@ -101,11 +101,11 @@ public class ScannerCamera {
 
                     if(!flag){
                         listStudents.add(p);
-                        System.out.println("Added: " + p.toString());
+                        System.out.println("Added: " + p.getName() + "," + p.getID() + "," + p.getSection() + "," + p.getCourse() + "," + p.getYear() + "," + Student.formatInstant(p.getTimeIn()));
                         SoundPlayer.playSound("assets/beep.wav");
                     }
-                } catch (NotFoundException e) {
-
+                } catch (NotFoundException | ArrayIndexOutOfBoundsException e) {
+                    continue;
                 }
             }
         });

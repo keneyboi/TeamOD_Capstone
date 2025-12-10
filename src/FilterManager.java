@@ -27,58 +27,16 @@ public class FilterManager {
             case "course":
                 filteredList.sort(new Filters.FilterByCourse());
                 break;
+            case "late":
+                filteredList.removeIf(p -> p instanceof Student s && s.getStatus().equalsIgnoreCase("on time"));
+                break;
+            case "on time":
+                filteredList.removeIf(p -> p instanceof Student s && s.getStatus().equalsIgnoreCase("late"));
+                break;
             default:
                 System.out.println("Invalid order");
 
         }
         return filteredList;
     }
-
-    public List<Person> filterList(String[] orders, String filter){
-        List<Person> result = new ArrayList<>();
-
-        for(String key : orders){
-            Iterator<Person> iterator = filteredList.iterator();
-            while(iterator.hasNext()){
-                Person p = iterator.next();
-                Student s = (Student) p;
-                String value = switch(filter.toLowerCase()){
-                    case "course" -> s.getCourse();
-                    case "year"  -> s.getYear();
-                    case "section"  -> s.getSection();
-                    default -> "";
-                };
-
-                if(value.equals(key)){
-                    result.add(p);
-                    iterator.remove();
-                }
-            }
-        }
-        result.addAll(filteredList);
-        filteredList.clear();
-        filteredList.addAll(result);
-        return result;
-    }
-
-    public void filterCSV(String order){
-        filterList(order);
-        CSVManager.createCSVFile(filteredList, event.getPathName(), "Event");
-    }
-
-    public void filterCSV(String[] orders, String filter){
-        filterList(orders, filter);
-        CSVManager.createCSVFile(filteredList, event.getPathName(), "Event");
-
-    }
-
-    public String[] getPrintableList(){
-
-        String[] result = new String[filteredList.size()];
-        for (int i = 0; i < filteredList.size(); i++) {
-            result[i] = filteredList.get(i).toString();
-        }
-        return result;
-    }
-
 }

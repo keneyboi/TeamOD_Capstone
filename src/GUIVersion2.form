@@ -859,7 +859,7 @@
                       <gridbag top="10" left="50" bottom="10" right="10" weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
-                      <text value="Label"/>
+                      <text value="Sort By:"/>
                     </properties>
                   </component>
                   <component id="69b3d" class="javax.swing.JComboBox" binding="filterCB" default-binding="true">

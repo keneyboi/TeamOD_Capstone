@@ -41,8 +41,4 @@ public class EventGroup {
         return listOfEvents;
     }
 
-    public int getNumOfEvents() {
-        return numOfEvents;
-    }
-
 }

@@ -85,10 +85,6 @@ public class Account {
         return listOfEventGroups;
     }
 
-    public String csvFormat(){
-        return name + "," + email + "," + new String(password);
-    }
-
     public String getPathname(){
         return "out/Account/" + name;
     }
