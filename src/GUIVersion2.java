@@ -113,6 +113,10 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     private JButton deleteButton;
     private JButton downloadCSVButton;
     private JButton downloadQRButton;
+    private JLabel IDCreationLabel;
+    private JLabel eventCreationLabel;
+    private JLabel accountDetailsLabel;
+    private JLabel atendoLabel;
     private boolean isViewingStudents = false;
 
     // for deleting
@@ -869,8 +873,8 @@ public class GUIVersion2 extends JFrame implements ActionListener {
         setMinimumSize(new Dimension(250, 380));
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(true);
+        createUIComponents();
         add(contentPanel);
-        createUIComponents(); //added function call: for everything UI-related
 
         //Disable Space
         usernameTF.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(' '), "none");
@@ -1125,16 +1129,19 @@ public class GUIVersion2 extends JFrame implements ActionListener {
     }
 
     private void createUIComponents() {
-        //ImageIcon logo = new ImageIcon("assets/test.png");
-        //Image newLogo = logo.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-        //logoLabel.setIcon(new ImageIcon(newLogo));
+        setFont("/glacialIndifferenceFont.otf"); //set GLOBAL font
+        //brother. my idea for automatically switching the font for everything
+        //doesn't work so ignore this shi
 
+        setIcon(atendoLabel, "/atendoLogo.png", 130, 130);
         setIcon(logoLabel, "/atendoLogoLight.png", 130, 130);
-        setIcon(scanLogoHereButton, "/scanIcon.png", 180, 180);
+        setIcon(scanLogoHereButton, "/scanIcon.png", 170, 170);
         setIcon(addNewStudentBTN, "/addStudentIcon.png", 100, 100);
         setIcon(newEventBTN, "/addEventIcon.png", 100, 100);
         setIcon(eventDetailsBTN, "/eventDetailsIcon.png", 100, 100);
         setIcon(accountBTN, "/accountInfoIcon.png", 100, 100);
+        setIcon(IDCreationLabel, "/miniStudentIcon.png", 35, 35);
+        setIcon(eventCreationLabel, "/miniEventIcon.png", 35, 35);
     }
 
     //helper method for setting the icon's width and height properly
@@ -1155,6 +1162,23 @@ public class GUIVersion2 extends JFrame implements ActionListener {
             case JLabel label -> label.setIcon(scaledIcon);
             case JToggleButton toggle -> toggle.setIcon(scaledIcon);
             default -> System.err.println("Component does not support icons: " + comp.getClass().getName());
+        }
+    }
+
+    private void setFont(String path) {
+        try {
+            URL fontURL = getClass().getResource(path);
+            if(fontURL == null){
+                System.err.println("Cannot find font: " + path);
+                return;
+            }
+            Font custom = Font.createFont(Font.TRUETYPE_FONT, fontURL.openStream())
+                    .deriveFont(Font.PLAIN, 14f);
+
+            contentPanel.setFont(custom);
+
+        } catch (Exception e) {
+            e.printStackTrace(); // fallback to default if this fails
         }
     }
 
